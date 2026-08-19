@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartSign SC — Category Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080c14; --panel:#0d1420; --panel2:#111a29; --line:#1c2740; --line2:#25324e;
+  --ink:#e9eef7; --sub:#aab6cc; --mut:#6b7893;
+  --teal:#37b6a3; --orange:#e0894a; --good:#37b6a3; --bad:#e5675f;
+  --shadow:0 1px 0 rgba(255,255,255,.02), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:
+   radial-gradient(1200px 600px at 82% -8%, rgba(55,182,163,.07), transparent 60%),
+   radial-gradient(900px 500px at -6% 4%, rgba(224,137,74,.06), transparent 55%),
+   var(--bg);}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+
+.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+  background:linear-gradient(180deg,rgba(8,12,20,.92),rgba(8,12,20,.72));border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:18px;height:66px}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.dot{width:11px;height:11px;border-radius:3px;background:linear-gradient(135deg,var(--teal),var(--orange));box-shadow:0 0 14px rgba(55,182,163,.5)}
+.brand b{font-weight:700;letter-spacing:-.2px;font-size:15px}
+.brand span{color:var(--mut);font-size:12.5px}
+.badge{margin-left:auto;font-size:11.5px;color:var(--sub);border:1px solid var(--line2);padding:6px 11px;border-radius:999px;background:var(--panel);white-space:nowrap}
+.dl{position:relative}
+.dl>button{font-family:inherit;font-size:12.5px;font-weight:600;color:#07110e;cursor:pointer;
+  background:linear-gradient(180deg,#43c6b2,#2f9f8e);border:0;padding:9px 15px;border-radius:9px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 20px -10px rgba(55,182,163,.7)}
+.dl>button:hover{filter:brightness(1.07)}
+.dl svg{width:14px;height:14px}
+.menu{position:absolute;right:0;top:calc(100% + 8px);min-width:230px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:6px;box-shadow:var(--shadow);display:none}
+.menu.open{display:block}
+.menu button{display:flex;flex-direction:column;gap:1px;width:100%;text-align:left;background:transparent;border:0;color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;padding:9px 11px;border-radius:8px;cursor:pointer}
+.menu button small{color:var(--mut);font-weight:400;font-size:11px}
+.menu button:hover{background:rgba(55,182,163,.1)}
+
+.hero{padding:26px 0 6px}
+.hero h1{margin:0;font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.6px;line-height:1.08}
+.hero h1 .g{background:linear-gradient(100deg,var(--teal),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:9px 0 0;color:var(--sub);max-width:780px;font-size:14px;line-height:1.55}
+
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:20px 0 4px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px 13px;position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;left:0;top:0;height:100%;width:3px;background:var(--teal);opacity:.65}
+.kpi.o::after{background:var(--orange)}
+.kpi .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.kpi .ksub{font-size:10px;color:#7e8ba4;font-weight:500;margin-top:2px;line-height:1.15}
+.kpi .v{font-size:21px;font-weight:600;margin-top:6px;letter-spacing:-.4px}
+.kpi .d{font-size:12px;margin-top:3px;font-weight:600}
+.legend{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:12px 2px 0;font-size:11.5px;color:#93a1bb}
+.legend .sw{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.legend .sw i{width:20px;height:9px;border-radius:3px;display:inline-block}
+.legend .dot-g{background:var(--good)} .legend .dot-r{background:var(--bad)}
+.legend .div{width:1px;height:12px;background:var(--line2)}
+.legend b{color:#c3ccdc;font-weight:600}
+td.gsep,th.gsep{border-left:2px solid var(--line2)}
+.good{color:var(--good)} .bad{color:var(--bad)}
+
+.tabs{display:flex;gap:6px;margin:22px 0 16px;border-bottom:1px solid var(--line)}
+.tab{background:transparent;border:0;color:var(--sub);font-family:inherit;font-size:14px;font-weight:600;padding:11px 18px;cursor:pointer;position:relative}
+.tab[aria-selected="true"]{color:var(--ink)}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--teal),var(--orange));border-radius:2px}
+.tab .n{font-family:"JetBrains Mono";font-size:11px;color:var(--mut);margin-right:8px}
+.view{display:none} .view.on{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);font-weight:700;margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* leaderboards */
+.leads{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.lead{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 16px 8px;position:relative}
+.lead-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:12px}
+.lead-t{font-size:14px;font-weight:700;letter-spacing:-.2px}
+.lead-s{font-size:11.5px;font-weight:600}
+.lead ol{list-style:none;margin:0;padding:0}
+.lead li{display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.lead li:first-child{border-top:0}
+.rk{font-family:"JetBrains Mono";font-size:12px;font-weight:700;color:var(--mut);text-align:center}
+.nmwrap{min-width:0}
+.nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subline{font-size:10.5px;color:var(--mut);font-family:"JetBrains Mono";margin-top:2px}
+.track{height:5px;border-radius:3px;background:var(--line);margin-top:5px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:3px}
+.val{font-family:"JetBrains Mono";font-size:13px;font-weight:700;text-align:right;white-space:nowrap}
+.lead-up .rk{color:var(--good)} .lead-down .rk{color:var(--bad)} .lead-top .rk{color:var(--orange)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.card h3{margin:0;font-size:14.5px;font-weight:700;letter-spacing:-.2px}
+.card .cap{color:#8b98b0;font-size:12px;margin:3px 0 0}
+.card .note{color:var(--sub);font-size:12.5px;line-height:1.5;margin:12px 0 2px;border-top:1px dashed var(--line2);padding-top:11px}
+.card .note b{color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-top:14px}
+
+.chartwrap{width:100%;overflow:hidden}
+svg{display:block;width:100%;height:auto}
+.axis text{fill:var(--mut);font-family:"JetBrains Mono";font-size:10px}
+.grid line{stroke:var(--line);stroke-dasharray:2 4}
+.wf-conn{stroke:var(--line2);stroke-width:1;stroke-dasharray:3 3}
+.wf-lab{fill:var(--sub);font-family:"DM Sans";font-size:10.5px;font-weight:600}
+.wf-val{font-family:"JetBrains Mono";font-size:10px;font-weight:600}
+.ln{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.pt{cursor:pointer}
+.tip{position:fixed;pointer-events:none;z-index:80;background:#0a1220;border:1px solid var(--line2);border-radius:10px;padding:9px 11px;font-size:12px;box-shadow:var(--shadow);opacity:0;transition:opacity .12s;max-width:230px}
+.tip b{font-size:12.5px} .tip .r{display:flex;justify-content:space-between;gap:16px;color:var(--sub);margin-top:3px}
+.tip .r span:last-child{color:var(--ink);font-family:"JetBrains Mono";font-weight:600}
+
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{background:transparent;border:0;color:var(--sub);font-family:inherit;font-size:12px;font-weight:600;padding:6px 11px;border-radius:6px;cursor:pointer}
+.seg button.act{background:rgba(55,182,163,.16);color:var(--ink)}
+.ctl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.ctl label{font-size:11.5px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+select{font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;cursor:pointer}
+
+.tablecard{margin-top:14px}
+.thead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.tscroll{overflow:auto;max-height:70vh;border-radius:12px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:760px}
+th,td{padding:9px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:var(--panel2);color:var(--sub);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;user-select:none;z-index:3;box-shadow:inset 0 -1px 0 var(--line2),0 6px 10px -8px rgba(0,0,0,.7)}
+th.l,td.l{text-align:left}
+th:hover{color:var(--ink)}
+th .ar{opacity:.4;font-size:9px;margin-left:3px}
+th.sorted .ar{opacity:1;color:var(--teal)}
+tbody td{font-family:"JetBrains Mono";color:var(--ink)}
+tbody td.l{font-family:"DM Sans";font-weight:600}
+tbody tr:hover td{background:rgba(55,182,163,.05)}
+tbody tr.total td{background:var(--panel2);font-weight:700;border-top:1px solid var(--line2)}
+tbody tr.total td.l{color:var(--orange)}
+/* frozen first (Category) column */
+td.l,th.l{position:sticky;left:0;border-right:2px solid var(--line2)}
+th.l{z-index:4;background:var(--panel2)}
+tbody td.l{z-index:2;background:#0a1017}
+tbody tr:hover td.l{background:#0e1826}
+tbody tr.total td.l{background:var(--panel2);z-index:2}
+.chip{font-family:"JetBrains Mono";font-weight:600}
+.foot{color:var(--mut);font-size:11.5px;padding:22px 0 40px;border-top:1px solid var(--line);margin-top:26px;line-height:1.6}
+@media(max-width:960px){.kpis{grid-template-columns:repeat(2,1fr)} .leads{grid-template-columns:1fr} .grid2{grid-template-columns:1fr} .badge{display:none} .top .wrap{gap:10px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span><div><b>SmartSign · SC</b> &nbsp;<span>Category Performance</span></div></div>
+  <span class="badge">YTD Jan–Jul · 2026 vs 2025</span>
+  <div class="dl">
+    <button id="dlBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Download data</button>
+    <div class="menu" id="dlMenu">
+      <button data-dl="leaders">Growth & loss leaders<small>Ranked category contribution · CSV</small></button>
+      <button data-dl="yoy">Year-over-year table<small>Category YTD 2026 vs 2025 · CSV</small></button>
+      <button data-dl="mom">Month-over-month table<small>Current metric · monthly + Δ · CSV</small></button>
+      <button data-dl="full">Full category dataset<small>Every category × month × metric · CSV</small></button>
+    </div>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>SC sales grew <span class="g">+$1.80M</span> — and five categories did most of the lifting.</h1>
+    <p>Across 14,906 active ASINs, total sales rose 11.7% YoY. The gain is concentrated: Custom and Tags alone added more than half of it, while Security quietly gave back the most. Here's who drove it, who dragged it, and who sells the most.</p>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="legend">
+    <span class="sw"><i class="dot-g"></i>green = better</span>
+    <span class="sw"><i class="dot-r"></i>red = worse</span>
+    <span class="div"></span>
+    <span>direction matters: for <b>Spend</b> &amp; <b>TACOS</b>, a <b>decrease</b> is the good one, so it shows green</span>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-yoy" aria-selected="true"><span class="n">01</span>Year over year</button>
+    <button class="tab" role="tab" id="t-mom"><span class="n">02</span>Month over month</button>
+  </div>
+
+  <!-- YoY -->
+  <section class="view on" id="v-yoy">
+    <div class="eyebrow">Who moved the needle</div>
+    <div class="leads" id="leads"></div>
+
+    <div class="eyebrow">How the growth was built</div>
+    <div class="card">
+      <h3 id="wfTitle">Growth bridge — 2025 to 2026</h3>
+      <p class="cap">Every category's dollar change, from last year's total to this year's. Green added sales; red gave them back.</p>
+      <div class="chartwrap" id="waterfall"></div>
+      <p class="note" id="wfNote"></p>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Top 5 categories — this year vs last</h3>
+        <p class="cap">YTD total sales, 2026 (teal) against 2025 (grey).</p>
+        <div class="chartwrap" id="top5"></div>
+        <p class="note" id="top5Note"></p>
+      </div>
+      <div class="card">
+        <h3>Concentration</h3>
+        <p class="cap">Share of total SC sales, YTD 2026.</p>
+        <div class="chartwrap" id="share"></div>
+        <p class="note" id="shareNote"></p>
+      </div>
+    </div>
+
+    <div class="eyebrow">Organic vs paid — is demand keeping up?</div>
+    <div class="grid2">
+      <div class="card">
+        <h3 id="orgTitle">Sales mix — organic vs ad-attributed</h3>
+        <p class="cap">Total sales split into organic (unpaid demand, teal) and ad-attributed (orange). 2025 vs 2026.</p>
+        <div class="chartwrap" id="orgMix"></div>
+        <p class="note" id="orgNote"></p>
+      </div>
+      <div class="card">
+        <h3>Organic sales YoY — top sellers</h3>
+        <p class="cap">Change in unpaid (organic) sales for the biggest categories.</p>
+        <div class="chartwrap" id="orgBars"></div>
+      </div>
+    </div>
+
+    <div class="card tablecard">
+      <div class="thead"><h3>Full category detail — YTD 2026 vs 2025</h3>
+        <span class="cap">Green favours the business (spend & TACOS down, sales, organic & ROAS up). Click a header to sort.</span></div>
+      <div class="tscroll"><table id="yoyTable"></table></div>
+    </div>
+  </section>
+
+  <!-- MoM -->
+  <section class="view" id="v-mom">
+    <div class="ctl">
+      <label>Metric</label>
+      <div class="seg" id="momMetric">
+        <button data-m="Total Sales" class="act">Total Sales</button>
+        <button data-m="Organic">Organic</button>
+        <button data-m="Spend">Spend</button>
+        <button data-m="ROAS">ROAS</button>
+        <button data-m="TACOS">TACOS</button>
+        <button data-m="Sessions">Sessions</button>
+        <button data-m="Total Orders">Orders</button>
+      </div>
+      <label style="margin-left:8px">Overlay</label>
+      <select id="momCat"></select>
+    </div>
+    <div class="card">
+      <h3 id="momTitle">Monthly trajectory — 2026</h3>
+      <p class="cap" id="momCap">All categories combined, January through July.</p>
+      <div class="chartwrap" id="line"></div>
+    </div>
+    <div class="eyebrow">Biggest movers — July vs June</div>
+    <div class="leads" id="momLeads" style="grid-template-columns:repeat(2,1fr)"></div>
+    <div class="card tablecard">
+      <div class="thead"><h3 id="momTblTitle">Category detail — monthly, 2026</h3>
+        <span class="cap">Δ = July vs June. Green is favourable. Click a header to sort.</span></div>
+      <div class="tscroll"><table id="momTable"></table></div>
+    </div>
+  </section>
+
+  <div class="foot" id="foot"></div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script id="DATA" type="application/json">{"months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"], "metrics": ["Total Sales", "Spend", "Ad Sales", "Sessions", "Total Orders", "Paid Orders"], "categories": {"(Blank)": {"Total Sales": {"2026": [20098.0, 54433.79, 85463.71, 63645.79, 71782.93, 67771.43, 81868.42], "2025": [399.0, 82198.49, 61488.81, 62444.98, 65193.2, 60484.62, 72580.99]}, "Spend": {"2026": [206.0, 7881.76, 10284.85, 9320.71, 10530.4, 10071.89, 11554.43], "2025": [0.0, 8766.31, 6150.06, 6023.56, 5230.52, 5421.79, 7322.61]}, "Ad Sales": {"2026": [536.0, 32012.38, 44609.77, 33709.11, 31658.3, 32831.87, 44196.3], "2025": [0.0, 32807.05, 26400.27, 23043.41, 24086.3, 19109.75, 29918.55]}, "Sessions": {"2026": [5543.0, 7561.0, 8869.0, 7971.0, 9663.0, 9007.0, 9190.0], "2025": [19.0, 10752.0, 8501.0, 8586.0, 6899.0, 7334.0, 8211.0]}, "Total Orders": {"2026": [264.0, 1174.0, 1361.0, 1266.0, 1508.0, 1487.0, 1622.0], "2025": [9.0, 1946.0, 1503.0, 1491.0, 1346.0, 1327.0, 1536.0]}, "Paid Orders": {"2026": [7.0, 650.0, 722.0, 632.0, 666.0, 705.0, 838.0], "2025": [0.0, 802.0, 695.0, 635.0, 543.0, 549.0, 696.0]}}, "0": {"Total Sales": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Spend": {"2026": [0.0, 1.26, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Ad Sales": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Sessions": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Total Orders": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Paid Orders": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}}, "AssetTag": {"Total Sales": {"2026": [32430.0, 29130.9, 31753.77, 30167.01, 33387.86, 31637.92, 28903.12], "2025": [27927.0, 31774.06, 31791.46, 31746.58, 25498.75, 23860.7, 29920.5]}, "Spend": {"2026": [4358.0, 3163.53, 4069.31, 3951.64, 4217.27, 4614.31, 3944.35], "2025": [3010.0, 3045.24, 3020.19, 2857.92, 2882.64, 2659.81, 2813.92]}, "Ad Sales": {"2026": [16233.0, 10653.8, 13215.6, 10075.19, 13283.11, 11930.92, 11944.79], "2025": [10910.0, 12299.5, 12229.2, 14452.77, 10754.91, 10069.45, 11321.18]}, "Sessions": {"2026": [3149.0, 2528.0, 3229.0, 2616.0, 2686.0, 2607.0, 2391.0], "2025": [3171.0, 2901.0, 3144.0, 2993.0, 3096.0, 2787.0, 2939.0]}, "Total Orders": {"2026": [302.0, 258.0, 274.0, 244.0, 265.0, 269.0, 250.0], "2025": [256.0, 259.0, 275.0, 287.0, 243.0, 213.0, 263.0]}, "Paid Orders": {"2026": [166.0, 107.0, 123.0, 118.0, 120.0, 133.0, 107.0], "2025": [108.0, 116.0, 118.0, 143.0, 107.0, 106.0, 114.0]}}, "Badges": {"Total Sales": {"2026": [1941.0, 1798.85, 2278.34, 1410.49, 1146.38, 1206.5, 655.91], "2025": [4475.0, 2127.97, 1851.46, 4030.69, 2631.5, 4527.03, 1709.66]}, "Spend": {"2026": [3.0, 6.28, 63.13, 89.12, 81.09, 82.11, 56.19], "2025": [266.0, 346.67, 417.21, 256.24, 127.01, 157.41, 375.71]}, "Ad Sales": {"2026": [114.0, 0.0, 232.32, 130.8, 287.45, 259.35, 166.99], "2025": [961.0, 473.43, 1514.95, 1813.29, 258.65, 168.85, 724.87]}, "Sessions": {"2026": [206.0, 203.0, 230.0, 182.0, 169.0, 114.0, 57.0], "2025": [727.0, 715.0, 917.0, 697.0, 368.0, 454.0, 504.0]}, "Total Orders": {"2026": [21.0, 17.0, 35.0, 14.0, 26.0, 28.0, 13.0], "2025": [48.0, 41.0, 45.0, 48.0, 26.0, 31.0, 27.0]}, "Paid Orders": {"2026": [2.0, 0.0, 4.0, 2.0, 9.0, 7.0, 4.0], "2025": [14.0, 15.0, 35.0, 15.0, 2.0, 7.0, 12.0]}}, "Bases": {"Total Sales": {"2026": [29073.0, 25108.7, 33289.81, 23151.74, 31296.0, 28102.72, 40624.17], "2025": [37505.0, 20051.85, 20196.55, 25294.8, 17659.05, 22193.6, 19637.85]}, "Spend": {"2026": [1998.0, 1578.49, 1699.18, 1531.61, 1641.59, 3156.62, 3255.6], "2025": [922.0, 335.58, 563.23, 770.6, 806.8, 612.31, 770.07]}, "Ad Sales": {"2026": [7930.0, 7582.95, 6466.84, 4479.99, 6106.63, 17423.96, 15117.68], "2025": [5435.0, 1909.12, 1352.14, 2959.79, 2196.27, 1212.89, 3208.86]}, "Sessions": {"2026": [1646.0, 1823.0, 2429.0, 2041.0, 2070.0, 2306.0, 2297.0], "2025": [1955.0, 1081.0, 1707.0, 1882.0, 1719.0, 1577.0, 2046.0]}, "Total Orders": {"2026": [82.0, 96.0, 121.0, 113.0, 114.0, 144.0, 178.0], "2025": [148.0, 76.0, 92.0, 96.0, 69.0, 61.0, 90.0]}, "Paid Orders": {"2026": [28.0, 39.0, 40.0, 34.0, 37.0, 102.0, 86.0], "2025": [22.0, 8.0, 11.0, 20.0, 22.0, 10.0, 24.0]}}, "Campground": {"Total Sales": {"2026": [7844.0, 7403.42, 10725.38, 9233.21, 12199.2, 13903.54, 12035.2], "2025": [5509.0, 4794.99, 6966.41, 9668.31, 10605.57, 9458.24, 9848.1]}, "Spend": {"2026": [1847.0, 1545.29, 2419.82, 2128.13, 2609.95, 2756.2, 2484.83], "2025": [1127.0, 1088.53, 1419.08, 1392.29, 1532.21, 1440.25, 1479.99]}, "Ad Sales": {"2026": [5906.0, 4722.19, 5844.6, 6017.92, 5816.39, 7535.88, 6438.07], "2025": [2118.0, 3836.68, 4052.54, 4546.96, 4086.41, 4838.92, 3403.17]}, "Sessions": {"2026": [935.0, 650.0, 1124.0, 1122.0, 1287.0, 1333.0, 1108.0], "2025": [697.0, 764.0, 993.0, 1283.0, 1348.0, 1274.0, 1182.0]}, "Total Orders": {"2026": [229.0, 250.0, 305.0, 235.0, 308.0, 327.0, 318.0], "2025": [139.0, 149.0, 195.0, 260.0, 263.0, 238.0, 255.0]}, "Paid Orders": {"2026": [175.0, 164.0, 172.0, 147.0, 177.0, 200.0, 181.0], "2025": [84.0, 110.0, 150.0, 155.0, 132.0, 126.0, 121.0]}}, "Cones": {"Total Sales": {"2026": [19251.0, 12864.2, 27545.88, 15465.38, 13708.7, 14834.5, 17741.06], "2025": [12530.0, 15325.65, 17732.85, 14143.99, 12567.29, 13591.25, 17819.25]}, "Spend": {"2026": [3223.0, 2592.0, 3293.58, 3489.25, 3112.16, 3426.95, 3902.74], "2025": [1848.0, 3341.4, 3756.49, 2854.41, 3231.7, 3414.06, 3395.13]}, "Ad Sales": {"2026": [9384.0, 5629.43, 10190.47, 7903.92, 7340.89, 9680.14, 11110.83], "2025": [5488.0, 7329.75, 14483.76, 6152.93, 7586.72, 9147.41, 6743.98]}, "Sessions": {"2026": [2161.0, 1605.0, 2150.0, 1650.0, 1749.0, 1845.0, 1814.0], "2025": [1424.0, 2343.0, 2631.0, 2243.0, 2481.0, 2276.0, 2367.0]}, "Total Orders": {"2026": [190.0, 160.0, 237.0, 168.0, 157.0, 158.0, 175.0], "2025": [115.0, 143.0, 154.0, 120.0, 123.0, 106.0, 150.0]}, "Paid Orders": {"2026": [124.0, 82.0, 114.0, 100.0, 99.0, 115.0, 126.0], "2025": [71.0, 101.0, 142.0, 77.0, 110.0, 89.0, 100.0]}}, "Construction": {"Total Sales": {"2026": [67379.0, 65849.72, 85730.95, 72259.22, 72202.97, 81209.14, 79329.49], "2025": [82914.0, 68531.98, 73219.78, 73188.67, 69097.01, 63958.75, 68358.39]}, "Spend": {"2026": [5687.0, 6080.89, 10073.63, 8013.8, 8559.52, 9488.11, 9775.15], "2025": [5549.0, 5839.13, 7555.76, 5982.03, 6267.6, 5862.42, 4970.42]}, "Ad Sales": {"2026": [28044.0, 31110.39, 44701.07, 34392.32, 30276.45, 39696.39, 39240.57], "2025": [32708.0, 32787.19, 32246.21, 28527.47, 30120.34, 23842.56, 30989.02]}, "Sessions": {"2026": [4476.0, 4468.0, 6160.0, 5614.0, 4908.0, 4929.0, 5203.0], "2025": [6171.0, 6032.0, 6521.0, 5818.0, 5822.0, 5377.0, 4895.0]}, "Total Orders": {"2026": [774.0, 777.0, 1008.0, 938.0, 931.0, 1048.0, 978.0], "2025": [861.0, 787.0, 946.0, 890.0, 865.0, 863.0, 764.0]}, "Paid Orders": {"2026": [323.0, 366.0, 518.0, 477.0, 444.0, 552.0, 497.0], "2025": [346.0, 341.0, 415.0, 383.0, 398.0, 349.0, 330.0]}}, "Custom": {"Total Sales": {"2026": [105795.0, 107867.85, 173723.85, 159438.86, 192486.72, 205302.42, 208448.42], "2025": [45026.0, 80217.76, 103049.88, 114958.94, 104214.91, 111144.04, 97658.02]}, "Spend": {"2026": [14043.0, 14481.02, 28474.77, 28600.11, 33202.56, 33551.45, 33646.45], "2025": [8979.0, 16229.04, 18003.06, 16466.53, 17562.03, 16665.96, 11418.32]}, "Ad Sales": {"2026": [51182.0, 53559.63, 103017.51, 86922.23, 98822.09, 98462.74, 98716.62], "2025": [23720.0, 46441.08, 51481.86, 48747.24, 48999.93, 52774.65, 38449.09]}, "Sessions": {"2026": [19873.0, 18069.0, 27612.0, 28614.0, 33812.0, 35873.0, 37399.0], "2025": [12797.0, 19141.0, 25205.0, 26710.0, 25560.0, 24493.0, 21730.0]}, "Total Orders": {"2026": [2221.0, 2341.0, 3543.0, 3264.0, 4061.0, 4346.0, 4164.0], "2025": [1128.0, 2081.0, 2399.0, 2605.0, 2325.0, 2298.0, 2295.0]}, "Paid Orders": {"2026": [1121.0, 1162.0, 2007.0, 1783.0, 2019.0, 2011.0, 1925.0], "2025": [584.0, 1181.0, 1260.0, 1138.0, 1141.0, 1153.0, 889.0]}}, "DogPoop": {"Total Sales": {"2026": [50073.0, 49025.72, 69916.27, 75489.16, 83716.72, 76474.12, 75055.36], "2025": [50504.0, 58540.32, 79678.08, 77286.16, 79490.7, 65429.17, 65825.3]}, "Spend": {"2026": [8348.0, 8619.49, 13047.1, 15669.5, 16991.83, 17203.81, 16378.35], "2025": [6977.0, 9477.74, 13316.0, 12908.74, 13723.41, 10620.46, 8716.02]}, "Ad Sales": {"2026": [29101.0, 24571.47, 37693.46, 41080.42, 47751.76, 43653.89, 43426.33], "2025": [18845.0, 27754.96, 34951.92, 35600.13, 37058.48, 33862.71, 29553.39]}, "Sessions": {"2026": [13199.0, 13454.0, 18112.0, 18473.0, 21444.0, 20171.0, 19076.0], "2025": [14945.0, 17495.0, 24142.0, 23525.0, 25583.0, 21057.0, 18498.0]}, "Total Orders": {"2026": [1267.0, 1264.0, 1693.0, 1793.0, 2064.0, 1886.0, 1742.0], "2025": [1439.0, 1626.0, 2208.0, 2148.0, 2145.0, 1750.0, 1751.0]}, "Paid Orders": {"2026": [679.0, 602.0, 861.0, 957.0, 1111.0, 1012.0, 962.0], "2025": [539.0, 757.0, 954.0, 1018.0, 1016.0, 859.0, 788.0]}}, "Door": {"Total Sales": {"2026": [70430.0, 74097.59, 100278.28, 96364.43, 93740.99, 88855.55, 90739.2], "2025": [71002.0, 72608.67, 90778.9, 89598.1, 82722.91, 75294.64, 81770.04]}, "Spend": {"2026": [10525.0, 11850.24, 19091.4, 17928.77, 18369.34, 20951.76, 21625.44], "2025": [6754.0, 8369.05, 12054.28, 12041.49, 12291.4, 12149.94, 12232.66]}, "Ad Sales": {"2026": [32330.0, 30377.56, 46757.28, 42269.05, 46439.7, 47871.56, 51578.99], "2025": [23895.0, 25937.0, 35414.7, 35643.45, 37186.35, 31515.87, 34399.08]}, "Sessions": {"2026": [26228.0, 28791.0, 32442.0, 22611.0, 23566.0, 27249.0, 25993.0], "2025": [26181.0, 23234.0, 32125.0, 33007.0, 35539.0, 28240.0, 27737.0]}, "Total Orders": {"2026": [3424.0, 3355.0, 4208.0, 3989.0, 3722.0, 3506.0, 3451.0], "2025": [3128.0, 3159.0, 3922.0, 4005.0, 3444.0, 3515.0, 3675.0]}, "Paid Orders": {"2026": [1591.0, 1435.0, 2038.0, 1790.0, 1844.0, 1862.0, 1932.0], "2025": [1067.0, 1202.0, 1673.0, 1730.0, 1490.0, 1589.0, 1718.0]}}, "HH0WSID001": {"Total Sales": {"2026": [0.0, 0.0, 2107.41, 9381.43, 8111.79, 6687.65, 8429.67], "2025": [0.0, 0.0, 3908.85, 509.85, 4418.7, 1359.6, 7409.82]}, "Spend": {"2026": [0.0, 0.0, 661.31, 702.52, 1114.95, 1001.08, 1172.13], "2025": [0.0, 0.0, 251.92, 44.67, 244.91, 95.57, 525.48]}, "Ad Sales": {"2026": [0.0, 0.0, 1650.32, 3179.49, 1782.02, 4722.0, 2058.16], "2025": [0.0, 0.0, 1383.45, 0.0, 880.05, 0.0, 2139.3]}, "Sessions": {"2026": [0.0, 0.0, 395.0, 354.0, 572.0, 412.0, 539.0], "2025": [0.0, 0.0, 291.0, 46.0, 299.0, 130.0, 490.0]}, "Total Orders": {"2026": [0.0, 0.0, 9.0, 24.0, 25.0, 16.0, 19.0], "2025": [0.0, 0.0, 12.0, 2.0, 17.0, 5.0, 22.0]}, "Paid Orders": {"2026": [0.0, 0.0, 12.0, 14.0, 10.0, 13.0, 9.0], "2025": [0.0, 0.0, 7.0, 0.0, 7.0, 0.0, 18.0]}}, "HardHat": {"Total Sales": {"2026": [19922.0, 18774.38, 20511.59, 19512.48, 22584.49, 19319.31, 18215.85], "2025": [21567.0, 23000.64, 19033.28, 19706.65, 15732.1, 15825.6, 17541.33]}, "Spend": {"2026": [2803.0, 2716.05, 3082.35, 2840.9, 2852.68, 3559.77, 2670.14], "2025": [4098.0, 3772.9, 4554.72, 3632.98, 2921.19, 3044.09, 1943.47]}, "Ad Sales": {"2026": [10193.0, 7725.49, 9967.25, 8501.57, 10703.36, 10248.95, 9860.14], "2025": [8007.0, 8913.53, 8207.6, 8548.32, 6203.44, 6871.19, 6535.97]}, "Sessions": {"2026": [4566.0, 4723.0, 5236.0, 4372.0, 4828.0, 4546.0, 4143.0], "2025": [6703.0, 6592.0, 6902.0, 6212.0, 5320.0, 5265.0, 4771.0]}, "Total Orders": {"2026": [754.0, 935.0, 1025.0, 902.0, 914.0, 897.0, 779.0], "2025": [827.0, 908.0, 954.0, 900.0, 764.0, 786.0, 826.0]}, "Paid Orders": {"2026": [309.0, 396.0, 511.0, 352.0, 419.0, 442.0, 339.0], "2025": [362.0, 446.0, 471.0, 437.0, 360.0, 399.0, 373.0]}}, "Inactive SKUs": {"Total Sales": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Spend": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Ad Sales": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Sessions": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Total Orders": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Paid Orders": {"2026": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}}, "Miscellaneous": {"Total Sales": {"2026": [2499.0, 3369.74, 2461.43, 2386.97, 3316.09, 3448.01, 3738.81], "2025": [2623.0, 2319.98, 2730.54, 2587.33, 3040.36, 3242.12, 3356.15]}, "Spend": {"2026": [276.0, 271.43, 275.53, 451.68, 625.63, 536.32, 670.99], "2025": [104.0, 118.08, 124.05, 254.2, 314.46, 271.64, 259.6]}, "Ad Sales": {"2026": [776.0, 534.66, 765.01, 891.18, 1645.92, 1214.85, 1440.47], "2025": [214.0, 687.7, 473.87, 780.71, 838.43, 1085.53, 1350.87]}, "Sessions": {"2026": [1822.0, 1182.0, 1200.0, 1187.0, 1480.0, 1511.0, 1756.0], "2025": [1025.0, 990.0, 1221.0, 1444.0, 1403.0, 1486.0, 1715.0]}, "Total Orders": {"2026": [203.0, 219.0, 192.0, 200.0, 287.0, 279.0, 307.0], "2025": [170.0, 168.0, 210.0, 233.0, 254.0, 306.0, 325.0]}, "Paid Orders": {"2026": [65.0, 33.0, 61.0, 70.0, 125.0, 105.0, 132.0], "2025": [14.0, 35.0, 32.0, 66.0, 69.0, 97.0, 83.0]}}, "N&L": {"Total Sales": {"2026": [8016.0, 8756.83, 7080.27, 14171.13, 8982.18, 12111.5, 8567.92], "2025": [2806.0, 5237.05, 5491.25, 6355.19, 8245.09, 5518.27, 7171.2]}, "Spend": {"2026": [1268.0, 1186.22, 1902.34, 2406.12, 1618.29, 1731.13, 1951.09], "2025": [161.0, 257.95, 639.96, 489.86, 486.91, 553.17, 724.14]}, "Ad Sales": {"2026": [4371.0, 2687.87, 3752.78, 7227.6, 4303.79, 6942.95, 4285.82], "2025": [961.0, 1358.0, 2666.15, 2107.65, 4120.35, 2512.15, 2948.45]}, "Sessions": {"2026": [1321.0, 990.0, 1276.0, 1425.0, 1359.0, 1365.0, 1382.0], "2025": [452.0, 663.0, 1055.0, 1070.0, 1117.0, 1036.0, 1099.0]}, "Total Orders": {"2026": [78.0, 62.0, 84.0, 132.0, 101.0, 101.0, 78.0], "2025": [34.0, 56.0, 65.0, 73.0, 89.0, 67.0, 75.0]}, "Paid Orders": {"2026": [36.0, 27.0, 50.0, 79.0, 47.0, 67.0, 48.0], "2025": [13.0, 17.0, 26.0, 24.0, 43.0, 32.0, 44.0]}}, "NoSmoking": {"Total Sales": {"2026": [29249.0, 33220.03, 43195.47, 48664.57, 49394.77, 49151.79, 46691.27], "2025": [30960.0, 32677.66, 45121.4, 44464.49, 44224.22, 41353.22, 37333.16]}, "Spend": {"2026": [4115.0, 4753.83, 7894.5, 9657.54, 9377.55, 9876.34, 9354.16], "2025": [2951.0, 3613.53, 4688.41, 4433.31, 5221.89, 5219.31, 4748.27]}, "Ad Sales": {"2026": [14977.0, 17339.08, 24213.02, 26911.61, 31943.64, 26762.57, 28049.82], "2025": [11468.0, 13522.51, 18883.81, 17191.28, 17944.39, 19783.63, 16618.71]}, "Sessions": {"2026": [4068.0, 4405.0, 5601.0, 5696.0, 6010.0, 5161.0, 5304.0], "2025": [5154.0, 5248.0, 6983.0, 7149.0, 7509.0, 6885.0, 5821.0]}, "Total Orders": {"2026": [1053.0, 1100.0, 1548.0, 1546.0, 1623.0, 1585.0, 1503.0], "2025": [1042.0, 1144.0, 1521.0, 1535.0, 1512.0, 1448.0, 1353.0]}, "Paid Orders": {"2026": [521.0, 525.0, 843.0, 827.0, 919.0, 891.0, 893.0], "2025": [409.0, 488.0, 648.0, 643.0, 679.0, 707.0, 626.0]}}, "Parking": {"Total Sales": {"2026": [312858.0, 295848.71, 351908.74, 333717.9, 352533.36, 387171.9, 420537.34], "2025": [354182.0, 336306.58, 376679.68, 376118.93, 357173.91, 344302.27, 359724.64]}, "Spend": {"2026": [32222.0, 30993.93, 43637.3, 44812.12, 49498.87, 58169.38, 61778.89], "2025": [28156.0, 36141.49, 44116.22, 41986.92, 41562.14, 43144.8, 41621.01]}, "Ad Sales": {"2026": [138910.0, 118734.48, 157828.9, 155246.39, 166453.09, 190959.48, 215140.9], "2025": [125618.0, 134424.81, 156438.5, 147047.14, 147266.24, 148339.03, 151441.07]}, "Sessions": {"2026": [31983.0, 30964.0, 34583.0, 31720.0, 35588.0, 36149.0, 36998.0], "2025": [38479.0, 40294.0, 47336.0, 46680.0, 46146.0, 44287.0, 44696.0]}, "Total Orders": {"2026": [6370.0, 6315.0, 7787.0, 7178.0, 7723.0, 8201.0, 8381.0], "2025": [7140.0, 7291.0, 8683.0, 8609.0, 8354.0, 8212.0, 8519.0]}, "Paid Orders": {"2026": [2963.0, 2651.0, 3446.0, 3359.0, 3756.0, 4037.0, 4200.0], "2025": [2944.0, 3177.0, 3895.0, 3641.0, 3568.0, 3679.0, 3850.0]}}, "ParkingStops": {"Total Sales": {"2026": [32188.0, 12233.6, 24875.32, 20889.6, 29405.5, 17901.15, 15745.73], "2025": [7719.0, 16868.8, 23394.1, 56616.7, 44483.75, 39190.1, 34123.71]}, "Spend": {"2026": [5187.0, 3316.44, 5089.85, 4837.16, 4875.61, 4292.49, 5651.03], "2025": [1537.0, 1208.54, 1907.64, 2933.24, 2589.99, 1793.35, 1436.16]}, "Ad Sales": {"2026": [21291.0, 7921.39, 12962.54, 10247.16, 11297.15, 8429.7, 12384.08], "2025": [5097.0, 7452.15, 10300.75, 24433.79, 23144.75, 12686.74, 11346.3]}, "Sessions": {"2026": [1305.0, 1051.0, 1465.0, 1379.0, 1395.0, 1077.0, 1267.0], "2025": [570.0, 1272.0, 1565.0, 2622.0, 2243.0, 1477.0, 1170.0]}, "Total Orders": {"2026": [51.0, 40.0, 66.0, 68.0, 65.0, 53.0, 72.0], "2025": [10.0, 23.0, 59.0, 120.0, 80.0, 67.0, 45.0]}, "Paid Orders": {"2026": [30.0, 32.0, 42.0, 42.0, 34.0, 26.0, 51.0], "2025": [12.0, 15.0, 41.0, 64.0, 72.0, 33.0, 23.0]}}, "Permits": {"Total Sales": {"2026": [77863.0, 79713.75, 94660.78, 95838.1, 87101.91, 100873.86, 104394.48], "2025": [70394.0, 67777.48, 60663.82, 71914.33, 69770.9, 62425.99, 72619.0]}, "Spend": {"2026": [8683.0, 7491.62, 11404.97, 11505.51, 13609.24, 16941.96, 17634.07], "2025": [9784.0, 12269.06, 8369.69, 9415.67, 9847.41, 7654.54, 8865.76]}, "Ad Sales": {"2026": [28546.0, 24715.79, 38468.57, 36823.21, 39202.14, 44374.88, 46121.74], "2025": [24069.0, 26740.92, 24156.03, 29960.21, 29446.94, 23080.22, 25764.32]}, "Sessions": {"2026": [13508.0, 13876.0, 17534.0, 16659.0, 15792.0, 17563.0, 17248.0], "2025": [15390.0, 16770.0, 16210.0, 16932.0, 16327.0, 14952.0, 16989.0]}, "Total Orders": {"2026": [1893.0, 1970.0, 2275.0, 2233.0, 2067.0, 2325.0, 2203.0], "2025": [1814.0, 1682.0, 1602.0, 1715.0, 1617.0, 1581.0, 1662.0]}, "Paid Orders": {"2026": [771.0, 705.0, 925.0, 863.0, 975.0, 1112.0, 1058.0], "2025": [771.0, 795.0, 710.0, 774.0, 772.0, 648.0, 675.0]}}, "Pool": {"Total Sales": {"2026": [15015.0, 15378.56, 35467.86, 48271.57, 90611.28, 87784.89, 61676.91], "2025": [14391.0, 18909.22, 32089.97, 46468.96, 76890.84, 66743.21, 42995.0]}, "Spend": {"2026": [1828.0, 2311.85, 5178.11, 8244.91, 14508.09, 15537.45, 10909.22], "2025": [1316.0, 1811.62, 3029.95, 4281.98, 7033.21, 10917.24, 8071.61]}, "Ad Sales": {"2026": [6210.0, 5236.81, 15777.09, 24134.8, 46400.09, 42237.14, 29873.67], "2025": [4718.0, 6174.8, 11118.42, 17917.18, 29595.52, 25144.65, 18270.06]}, "Sessions": {"2026": [2596.0, 3326.0, 5482.0, 8455.0, 14479.0, 16499.0, 12347.0], "2025": [2715.0, 3516.0, 6354.0, 9275.0, 14944.0, 20375.0, 12855.0]}, "Total Orders": {"2026": [566.0, 589.0, 1243.0, 1562.0, 2776.0, 3078.0, 2262.0], "2025": [522.0, 652.0, 1047.0, 1594.0, 2364.0, 2597.0, 1476.0]}, "Paid Orders": {"2026": [243.0, 203.0, 545.0, 723.0, 1323.0, 1439.0, 1004.0], "2025": [195.0, 243.0, 327.0, 637.0, 864.0, 1122.0, 581.0]}}, "Posts": {"Total Sales": {"2026": [43042.0, 59975.09, 80394.55, 67711.17, 77097.1, 67951.09, 92605.26], "2025": [50082.0, 69331.87, 73260.82, 80818.92, 65246.5, 60179.73, 71455.42]}, "Spend": {"2026": [5985.0, 5130.97, 10376.59, 12200.99, 12801.12, 14356.08, 13385.63], "2025": [4328.0, 6161.65, 9193.13, 7661.69, 9017.64, 8824.46, 7337.34]}, "Ad Sales": {"2026": [17339.0, 19020.83, 42337.21, 41181.99, 48808.02, 41739.08, 52829.32], "2025": [18691.0, 29562.19, 32492.31, 27715.66, 32674.98, 25724.32, 26633.97]}, "Sessions": {"2026": [5082.0, 4610.0, 7119.0, 7417.0, 8248.0, 7220.0, 7504.0], "2025": [6250.0, 8318.0, 12408.0, 11068.0, 11681.0, 10784.0, 10290.0]}, "Total Orders": {"2026": [417.0, 453.0, 634.0, 595.0, 650.0, 699.0, 729.0], "2025": [589.0, 704.0, 944.0, 987.0, 797.0, 588.0, 895.0]}, "Paid Orders": {"2026": [154.0, 187.0, 397.0, 358.0, 418.0, 429.0, 472.0], "2025": [189.0, 267.0, 340.0, 314.0, 295.0, 274.0, 331.0]}}, "QCL": {"Total Sales": {"2026": [16782.0, 12756.1, 17836.54, 17896.81, 16870.77, 21381.04, 20760.56], "2025": [20555.0, 15063.91, 23067.29, 18040.55, 15780.82, 18657.17, 20161.17]}, "Spend": {"2026": [1527.0, 933.53, 1565.73, 1915.17, 1653.15, 2570.97, 2243.74], "2025": [1102.0, 1024.12, 1064.71, 898.62, 906.95, 1027.61, 1268.16]}, "Ad Sales": {"2026": [6035.0, 6044.92, 6828.08, 6824.44, 7298.85, 9898.43, 7077.93], "2025": [7648.0, 5343.9, 8014.19, 4933.14, 4238.03, 5922.12, 6269.19]}, "Sessions": {"2026": [1897.0, 1470.0, 1695.0, 1877.0, 1793.0, 1936.0, 2046.0], "2025": [2273.0, 2085.0, 2486.0, 2302.0, 1856.0, 2099.0, 2326.0]}, "Total Orders": {"2026": [429.0, 383.0, 450.0, 489.0, 435.0, 519.0, 487.0], "2025": [459.0, 426.0, 521.0, 452.0, 376.0, 436.0, 520.0]}, "Paid Orders": {"2026": [179.0, 157.0, 186.0, 210.0, 192.0, 246.0, 208.0], "2025": [177.0, 159.0, 209.0, 139.0, 122.0, 142.0, 187.0]}}, "Restroom": {"Total Sales": {"2026": [36252.0, 38026.83, 46146.15, 45483.48, 42593.5, 43191.17, 42938.36], "2025": [39174.0, 39772.42, 44271.36, 34448.06, 36979.65, 34596.89, 38270.2]}, "Spend": {"2026": [4913.0, 5253.54, 8864.05, 8268.66, 7683.15, 8783.39, 9513.12], "2025": [4356.0, 5683.66, 5977.65, 4731.01, 4549.38, 4792.09, 5525.91]}, "Ad Sales": {"2026": [16191.0, 18322.06, 24466.79, 23870.3, 22714.04, 22001.38, 25173.59], "2025": [15488.0, 19614.63, 18697.22, 12868.37, 13192.4, 15012.14, 16933.4]}, "Sessions": {"2026": [9265.0, 8206.0, 9935.0, 9492.0, 8635.0, 8143.0, 11036.0], "2025": [11284.0, 12468.0, 14016.0, 11979.0, 11320.0, 10820.0, 13155.0]}, "Total Orders": {"2026": [1506.0, 1506.0, 1725.0, 1729.0, 1578.0, 1542.0, 1542.0], "2025": [1513.0, 1562.0, 1858.0, 1498.0, 1619.0, 1578.0, 1774.0]}, "Paid Orders": {"2026": [686.0, 685.0, 863.0, 828.0, 786.0, 820.0, 864.0], "2025": [575.0, 717.0, 768.0, 569.0, 623.0, 704.0, 874.0]}}, "Safety": {"Total Sales": {"2026": [291754.0, 292826.7, 378767.91, 392955.96, 441142.44, 379099.73, 388489.84], "2025": [293317.0, 306065.65, 372200.06, 354476.18, 347590.89, 322869.32, 293582.03]}, "Spend": {"2026": [34636.0, 35185.74, 52385.36, 61057.06, 60337.14, 63781.02, 63357.7], "2025": [24586.0, 29945.67, 35067.56, 34510.04, 35455.54, 33815.2, 29036.81]}, "Ad Sales": {"2026": [132315.0, 130625.78, 185005.99, 192210.97, 211598.66, 188703.42, 198655.52], "2025": [107327.0, 115661.16, 137598.26, 133458.35, 129834.16, 118626.99, 107555.28]}, "Sessions": {"2026": [31315.0, 31435.0, 39334.0, 42969.0, 43785.0, 39951.0, 39391.0], "2025": [40926.0, 43417.0, 51882.0, 52171.0, 52515.0, 47685.0, 42079.0]}, "Total Orders": {"2026": [9035.0, 8869.0, 11137.0, 11396.0, 11897.0, 11125.0, 10785.0], "2025": [8600.0, 8805.0, 10764.0, 10696.0, 10415.0, 9852.0, 9236.0]}, "Paid Orders": {"2026": [4435.0, 4118.0, 5652.0, 5922.0, 6115.0, 5856.0, 5801.0], "2025": [3445.0, 3726.0, 4446.0, 4399.0, 4409.0, 4102.0, 3721.0]}}, "Security": {"Total Sales": {"2026": [252317.0, 233341.77, 342380.59, 345582.27, 390009.36, 418486.0, 387300.61], "2025": [286325.0, 290252.2, 381381.62, 400629.98, 400852.83, 399163.02, 359271.02]}, "Spend": {"2026": [38600.0, 41608.53, 71488.72, 76587.69, 80544.48, 88511.29, 88732.63], "2025": [41479.0, 53930.96, 68820.21, 65326.77, 70576.3, 69377.56, 59546.79]}, "Ad Sales": {"2026": [122925.0, 108752.81, 168763.98, 181455.19, 209284.53, 223666.6, 210537.28], "2025": [116055.0, 121775.81, 155116.06, 157880.32, 164685.4, 164820.03, 158268.9]}, "Sessions": {"2026": [63910.0, 59243.0, 79483.0, 77620.0, 86917.0, 82740.0, 80419.0], "2025": [96741.0, 101744.0, 132197.0, 136852.0, 136737.0, 136720.0, 126159.0]}, "Total Orders": {"2026": [10317.0, 9838.0, 13556.0, 12674.0, 14694.0, 14378.0, 13260.0], "2025": [12486.0, 12823.0, 16222.0, 16350.0, 16362.0, 17012.0, 16174.0]}, "Paid Orders": {"2026": [4457.0, 4091.0, 5950.0, 6090.0, 6969.0, 7046.0, 6955.0], "2025": [4836.0, 5257.0, 6418.0, 6384.0, 6496.0, 6658.0, 6615.0]}}, "Shipping": {"Total Sales": {"2026": [3414.0, 1883.54, 3601.45, 3369.32, 3988.58, 1775.71, 2545.74], "2025": [2697.0, 2851.88, 3255.19, 2663.02, 2891.71, 2996.27, 2670.88]}, "Spend": {"2026": [332.0, 286.55, 507.55, 402.0, 607.73, 398.53, 450.2], "2025": [11.0, 47.14, 104.22, 208.14, 163.82, 215.07, 290.05]}, "Ad Sales": {"2026": [1062.0, 800.1, 1173.07, 1242.47, 1792.45, 869.18, 1114.31], "2025": [181.0, 369.07, 323.02, 524.32, 586.1, 416.66, 566.69]}, "Sessions": {"2026": [331.0, 286.0, 346.0, 292.0, 441.0, 271.0, 307.0], "2025": [176.0, 156.0, 295.0, 398.0, 281.0, 334.0, 358.0]}, "Total Orders": {"2026": [65.0, 51.0, 71.0, 66.0, 94.0, 46.0, 62.0], "2025": [44.0, 39.0, 61.0, 56.0, 44.0, 45.0, 50.0]}, "Paid Orders": {"2026": [32.0, 29.0, 34.0, 33.0, 53.0, 28.0, 31.0], "2025": [4.0, 9.0, 11.0, 16.0, 12.0, 13.0, 20.0]}}, "Sidewalk": {"Total Sales": {"2026": [51554.0, 41504.74, 86288.79, 78266.49, 100856.36, 106480.17, 86944.3], "2025": [38571.0, 44925.12, 54693.96, 64090.88, 64948.56, 60530.93, 53836.59]}, "Spend": {"2026": [10164.0, 7445.39, 13673.66, 12795.63, 14878.99, 18751.31, 15610.85], "2025": [3711.0, 4918.33, 7467.94, 6921.97, 7534.22, 6562.14, 6567.92]}, "Ad Sales": {"2026": [27384.0, 17422.42, 49078.06, 38628.55, 52960.72, 50598.41, 40024.44], "2025": [13009.0, 20934.35, 27179.57, 29085.33, 23329.35, 30516.42, 30947.03]}, "Sessions": {"2026": [4927.0, 3892.0, 6269.0, 6468.0, 7370.0, 8600.0, 7435.0], "2025": [3849.0, 4460.0, 5959.0, 6181.0, 5701.0, 5539.0, 5430.0]}, "Total Orders": {"2026": [176.0, 149.0, 288.0, 258.0, 343.0, 362.0, 314.0], "2025": [137.0, 164.0, 189.0, 209.0, 241.0, 218.0, 198.0]}, "Paid Orders": {"2026": [108.0, 72.0, 164.0, 138.0, 203.0, 197.0, 155.0], "2025": [51.0, 85.0, 102.0, 98.0, 103.0, 114.0, 125.0]}}, "TabsStamps": {"Total Sales": {"2026": [539.0, 183.43, 192.64, 20.95, 192.64, 62.85, 405.81], "2025": [1109.0, 377.1, 799.16, 41.9, 183.43, 408.76, 246.28]}, "Spend": {"2026": [224.0, 144.34, 140.42, 157.54, 28.33, 9.21, 50.69], "2025": [0.0, 8.0, 7.53, 22.52, 43.46, 32.32, 16.35]}, "Ad Sales": {"2026": [0.0, 0.0, 20.95, 0.0, 20.95, 41.9, 20.95], "2025": [0.0, 20.95, 41.9, 0.0, 0.0, 366.86, 62.85]}, "Sessions": {"2026": [64.0, 29.0, 16.0, 4.0, 20.0, 8.0, 37.0], "2025": [146.0, 65.0, 73.0, 26.0, 21.0, 44.0, 23.0]}, "Total Orders": {"2026": [3.0, 1.0, 2.0, 1.0, 2.0, 2.0, 4.0], "2025": [34.0, 16.0, 16.0, 2.0, 1.0, 3.0, 3.0]}, "Paid Orders": {"2026": [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0], "2025": [0.0, 1.0, 2.0, 0.0, 0.0, 1.0, 2.0]}}, "Tags": {"Total Sales": {"2026": [192014.0, 157639.16, 200411.27, 189425.56, 203416.71, 223537.92, 206701.32], "2025": [143376.0, 143852.67, 128487.56, 119254.99, 119475.63, 125705.67, 150292.92]}, "Spend": {"2026": [22980.0, 15796.05, 26973.9, 25158.31, 29159.96, 34742.9, 33070.37], "2025": [15856.0, 19370.42, 15567.82, 13037.72, 14068.89, 12217.83, 13085.8]}, "Ad Sales": {"2026": [77638.0, 52114.82, 83568.14, 78061.41, 87128.95, 97103.92, 92203.45], "2025": [52443.0, 59506.47, 44106.64, 40290.31, 42673.31, 44822.7, 52173.38]}, "Sessions": {"2026": [20793.0, 18043.0, 19806.0, 18599.0, 19711.0, 21058.0, 21684.0], "2025": [17345.0, 19046.0, 17723.0, 16565.0, 16182.0, 14994.0, 16373.0]}, "Total Orders": {"2026": [3769.0, 3248.0, 4189.0, 3903.0, 4238.0, 4169.0, 3941.0], "2025": [3031.0, 3128.0, 2996.0, 2691.0, 2624.0, 2739.0, 3185.0]}, "Paid Orders": {"2026": [1698.0, 1273.0, 1994.0, 1808.0, 2081.0, 2041.0, 2093.0], "2025": [1296.0, 1444.0, 1263.0, 1057.0, 1162.0, 1131.0, 1265.0]}}, "Tape": {"Total Sales": {"2026": [169.0, 4198.23, 421.79, 1328.53, 552.8, 2876.77, 930.75], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 323.7, 0.0]}, "Spend": {"2026": [29.0, 5.74, 85.9, 125.45, 56.91, 29.04, 65.2], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Ad Sales": {"2026": [120.0, 0.0, 510.1, 579.77, 40.99, 119.95, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, "Sessions": {"2026": [18.0, 11.0, 28.0, 33.0, 26.0, 23.0, 6.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0]}, "Total Orders": {"2026": [2.0, 3.0, 5.0, 8.0, 7.0, 10.0, 5.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 0.0]}, "Paid Orders": {"2026": [1.0, 0.0, 7.0, 5.0, 1.0, 1.0, 0.0], "2025": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}}, "Traffic": {"Total Sales": {"2026": [103825.0, 104143.67, 151783.03, 158072.89, 178237.99, 173743.59, 179621.54], "2025": [108693.0, 105161.09, 156708.26, 152772.42, 154226.52, 150693.5, 153457.61]}, "Spend": {"2026": [13518.0, 12340.95, 20821.38, 24514.19, 28273.66, 31366.99, 29724.95], "2025": [16170.0, 16569.99, 19924.87, 19024.26, 20453.13, 19000.53, 15709.0]}, "Ad Sales": {"2026": [40845.0, 38500.39, 68344.24, 67509.31, 78735.48, 79532.68, 76516.87], "2025": [41577.0, 41241.31, 63490.4, 57378.45, 53922.99, 59243.77, 56168.94]}, "Sessions": {"2026": [19358.0, 16709.0, 21813.0, 22873.0, 25880.0, 23433.0, 23070.0], "2025": [22780.0, 21459.0, 27630.0, 27651.0, 28077.0, 26779.0, 26238.0]}, "Total Orders": {"2026": [2371.0, 2265.0, 3210.0, 3222.0, 3495.0, 3338.0, 3360.0], "2025": [2538.0, 2483.0, 3577.0, 3597.0, 3585.0, 3689.0, 3538.0]}, "Paid Orders": {"2026": [997.0, 877.0, 1492.0, 1392.0, 1528.0, 1593.0, 1532.0], "2025": [1065.0, 1109.0, 1594.0, 1493.0, 1436.0, 1555.0, 1402.0]}}, "Warehouse": {"Total Sales": {"2026": [32414.0, 27320.19, 40665.86, 48041.97, 31937.87, 37445.79, 41150.93], "2025": [25996.0, 29831.86, 29723.25, 27608.77, 23714.94, 25609.1, 32794.75]}, "Spend": {"2026": [5866.0, 3457.94, 9701.98, 9218.63, 7787.68, 9005.64, 9903.74], "2025": [3030.0, 6875.62, 4780.01, 4012.75, 4073.11, 3234.98, 3067.02]}, "Ad Sales": {"2026": [16050.0, 11805.54, 19038.19, 26693.07, 16250.08, 18872.82, 21547.2], "2025": [7784.0, 13430.26, 10721.1, 9870.73, 8147.47, 9278.31, 13654.33]}, "Sessions": {"2026": [7848.0, 5656.0, 8384.0, 8046.0, 7492.0, 7457.0, 8202.0], "2025": [7393.0, 10073.0, 8631.0, 7559.0, 7384.0, 6272.0, 6977.0]}, "Total Orders": {"2026": [1260.0, 921.0, 1468.0, 1410.0, 1164.0, 1240.0, 1307.0], "2025": [978.0, 1104.0, 1070.0, 987.0, 834.0, 846.0, 1121.0]}, "Paid Orders": {"2026": [656.0, 419.0, 811.0, 828.0, 658.0, 724.0, 755.0], "2025": [384.0, 558.0, 474.0, 422.0, 368.0, 345.0, 473.0]}}}, "generated": "2026-08-17", "source": "Category_-_SC.xlsx (active ASIN listing, 14,906 ASINs)"}</script>
+<script>
+"use strict";
+const D=JSON.parse(document.getElementById('DATA').textContent);
+const MONTHS=D.months, CATS=D.categories;
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const fmtUSD=v=>(v<0?'-':'')+'$'+Math.abs(Math.round(v)).toLocaleString();
+const fmtUSDk=v=>{const a=Math.abs(v),s=v<0?'-':'';if(a>=1e6)return s+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3){const k=Math.round(a/1e3);return k>=1000?s+'$'+(a/1e6).toFixed(2)+'M':s+'$'+k.toLocaleString()+'k';}return s+'$'+Math.round(a).toLocaleString();};
+const fmtUSDm=v=>'$'+(v/1e6).toFixed(2)+'M';
+const fmtDk=v=>{const a=Math.abs(v),sg=v>=0?'+':'\u2212';if(a>=1e6)return sg+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3){const k=Math.round(a/1e3);return k>=1000?sg+'$'+(a/1e6).toFixed(2)+'M':sg+'$'+k.toLocaleString()+'k';}return sg+'$'+Math.round(a).toLocaleString();};
+const fmtInt=v=>Math.round(v).toLocaleString();
+const fmtPct=(v,d=1)=>(v*100).toFixed(d)+'%';
+const fmtSg=(v,d=1)=>(v>=0?'+':'')+(v*100).toFixed(d)+'%';
+const fmtX=v=>v.toFixed(2)+'x'; const fmtXd=v=>(v>=0?'+':'')+v.toFixed(2)+'x';
+const LOWER_GOOD=new Set(['Spend','TACOS','ACOS']);
+const favClass=(m,d)=>{if(Math.abs(d)<1e-9)return '';const g=LOWER_GOOD.has(m)?d<0:d>0;return g?'good':'bad';};
+
+const ytd=(c,m,y)=>sum(CATS[c][m][y]);
+const totYtd=(m,y)=>Object.keys(CATS).reduce((s,c)=>s+ytd(c,m,y),0);
+const monthlyTotal=(m,y)=>MONTHS.map((_,i)=>Object.keys(CATS).reduce((s,c)=>s+CATS[c][m][y][i],0));
+function derivedYTD(cat){
+  const t=m=>ytd(cat,m,'2026'),p=m=>ytd(cat,m,'2025');
+  const roas26=t('Spend')?t('Ad Sales')/t('Spend'):0,roas25=p('Spend')?p('Ad Sales')/p('Spend'):0;
+  const tac26=t('Total Sales')?t('Spend')/t('Total Sales'):0,tac25=p('Total Sales')?p('Spend')/p('Total Sales'):0;
+  const org26=t('Total Sales')-t('Ad Sales'),org25=p('Total Sales')-p('Ad Sales');
+  return {cat,ts26:t('Total Sales'),ts25:p('Total Sales'),d:t('Total Sales')-p('Total Sales'),
+    sYoY:p('Total Sales')?t('Total Sales')/p('Total Sales')-1:null,sp26:t('Spend'),
+    spYoY:p('Spend')?t('Spend')/p('Spend')-1:null,roas26,roasD:roas26-roas25,tac26,tacD:tac26-tac25,
+    org26,org25,orgYoY:org25?org26/org25-1:null,orgShare:t('Total Sales')?org26/t('Total Sales'):0,
+    ad26:t('Ad Sales'),ad25:p('Ad Sales'),
+    seYoY:p('Sessions')?t('Sessions')/p('Sessions')-1:null};
+}
+const CATLIST=Object.keys(CATS).map(derivedYTD).sort((a,b)=>b.ts26-a.ts26);
+const TOT26=totYtd('Total Sales','2026'),TOT25=totYtd('Total Sales','2025'),NET=TOT26-TOT25;
+const ORG26=TOT26-totYtd('Ad Sales','2026'),ORG25=TOT25-totYtd('Ad Sales','2025');
+const SP26=totYtd('Spend','2026');
+CATLIST.forEach(r=>{r.salesShare=TOT26?r.ts26/TOT26:0;r.spendShare=SP26?r.sp26/SP26:0;});
+
+// KPIs
+(function(){
+  const sp26=totYtd('Spend','2026'),sp25=totYtd('Spend','2025');
+  const as26=totYtd('Ad Sales','2026'),as25=totYtd('Ad Sales','2025');
+  const roas26=as26/sp26,roas25=as25/sp25,tac26=sp26/TOT26,tac25=sp25/TOT25;
+  const c=[
+    {k:'Total Sales YTD',sub:'all sales, Jan–Jul',v:fmtUSD(TOT26),d:fmtSg(TOT26/TOT25-1),m:'Total Sales',x:TOT26/TOT25-1},
+    {k:'Organic Sales YTD',sub:'sales not driven by ads',v:fmtUSD(ORG26),d:fmtSg(ORG26/ORG25-1),m:'Organic',x:ORG26/ORG25-1},
+    {k:'Ad Spend YTD',sub:'total advertising cost',v:fmtUSD(sp26),d:fmtSg(sp26/sp25-1),m:'Spend',x:sp26/sp25-1,o:1},
+    {k:'Blended ROAS',sub:'ad sales ÷ spend',v:fmtX(roas26),d:fmtXd(roas26-roas25),m:'ROAS',x:roas26-roas25},
+    {k:'TACOS',sub:'ad spend ÷ total sales',v:fmtPct(tac26),d:fmtSg(tac26-tac25)+' pp',m:'TACOS',x:tac26-tac25,o:1},
+    {k:'Organic Share',sub:'organic ÷ total sales',v:fmtPct(ORG26/TOT26),d:fmtSg(ORG26/TOT26-ORG25/TOT25)+' pp',m:'Organic',x:ORG26/TOT26-ORG25/TOT25},
+  ];
+  document.getElementById('kpis').innerHTML=c.map(o=>`<div class="kpi ${o.o?'o':''}"><div class="k">${o.k}</div><div class="ksub">${o.sub}</div><div class="v mono">${o.v}</div><div class="d ${favClass(o.m,o.x)}">${o.d} YoY</div></div>`).join('');
+})();
+
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a={},k=[])=>{const e=document.createElementNS(NS,t);for(const n in a)e.setAttribute(n,a[n]);k.forEach(c=>e.appendChild(c));return e;};
+const txt=s=>document.createTextNode(s);
+const tip=document.getElementById('tip');
+function showTip(h,ev){tip.innerHTML=h;tip.style.opacity=1;moveTip(ev);}
+function moveTip(ev){let x=ev.clientX+14,y=ev.clientY+14;const w=tip.offsetWidth,h=tip.offsetHeight;if(x+w>innerWidth-12)x=ev.clientX-w-14;if(y+h>innerHeight-12)y=ev.clientY-h-14;tip.style.left=x+'px';tip.style.top=y+'px';}
+const hideTip=()=>tip.style.opacity=0;
+window.addEventListener('scroll',()=>{if(tip.style.opacity==1)hideTip();});
+
+// ---------- LEADERBOARDS ----------
+function leadCard(cls,title,sub,items){
+  const max=Math.max(...items.map(i=>Math.abs(i.bar)))||1;
+  const rows=items.map((it,i)=>`<li>
+    <span class="rk">${i+1}</span>
+    <span class="nmwrap"><span class="nm">${it.name}</span><div class="subline">${it.sub}</div>
+      <div class="track"><i style="width:${Math.max(4,Math.abs(it.bar)/max*100)}%;background:${it.color}"></i></div></span>
+    <span class="val ${it.vcls||''}">${it.val}</span></li>`).join('');
+  return `<div class="lead ${cls}"><div class="lead-h"><span class="lead-t">${title}</span><span class="lead-s ${sub.cls||''}">${sub.text}</span></div><ol>${rows}</ol></div>`;
+}
+function renderLeaders(){
+  const byD=[...CATLIST].sort((a,b)=>b.d-a.d);
+  const gain=byD.filter(r=>r.d>0).slice(0,5);
+  const loss=byD.filter(r=>r.d<0).slice(-5).reverse().sort((a,b)=>a.d-b.d);
+  const sell=[...CATLIST].slice(0,5);
+  const totGain=CATLIST.filter(r=>r.d>0).reduce((s,r)=>s+r.d,0);
+  const g=leadCard('lead-up','Top 5 driving growth',{text:fmtDk(gain.reduce((s,r)=>s+r.d,0))+' added',cls:'good'},
+    gain.map(r=>({name:r.cat,sub:`${fmtUSDk(r.ts25)} → ${fmtUSDk(r.ts26)} · ${fmtSg(r.sYoY)}`,bar:r.d,color:'var(--good)',val:fmtDk(r.d),vcls:'good'})));
+  const l=leadCard('lead-down','Top 5 dragging',{text:fmtDk(loss.reduce((s,r)=>s+r.d,0))+' lost',cls:'bad'},
+    loss.map(r=>({name:r.cat,sub:`${fmtUSDk(r.ts25)} → ${fmtUSDk(r.ts26)} · ${fmtSg(r.sYoY)}`,bar:r.d,color:'var(--bad)',val:fmtDk(r.d),vcls:'bad'})));
+  const s=leadCard('lead-top','Top 5 biggest sellers',{text:fmtPct(sell.reduce((a,r)=>a+r.ts26,0)/TOT26,0)+' of sales'},
+    sell.map(r=>({name:r.cat,sub:`${fmtPct(r.ts26/TOT26)} share · ${fmtSg(r.sYoY)} YoY`,bar:r.ts26,color:'var(--orange)',val:fmtUSDm(r.ts26)})));
+  document.getElementById('leads').innerHTML=g+l+s;
+}
+
+// ---------- WATERFALL ----------
+function drawWaterfall(){
+  const byD=[...CATLIST].sort((a,b)=>b.d-a.d);
+  const g=byD.filter(r=>r.d>0), l=byD.filter(r=>r.d<0).sort((a,b)=>a.d-b.d);
+  const top5g=g.slice(0,5), top3l=l.slice(0,3);
+  const otherG=g.slice(5).reduce((s,r)=>s+r.d,0), otherL=l.slice(3).reduce((s,r)=>s+r.d,0);
+  const steps=[{lab:'2025 total',kind:'total',v:TOT25}];
+  top5g.forEach(r=>steps.push({lab:r.cat,kind:'up',d:r.d}));
+  if(otherG>0)steps.push({lab:'Other +',kind:'up',d:otherG});
+  top3l.forEach(r=>steps.push({lab:r.cat,kind:'down',d:r.d}));
+  if(otherL<0)steps.push({lab:'Other \u2212',kind:'down',d:otherL});
+  steps.push({lab:'2026 total',kind:'total',v:TOT26});
+
+  const W=1080,H=360,ml=52,mr=14,mt=16,mb=54,iw=W-ml-mr,ih=H-mt-mb;
+  const amin=Math.floor(TOT25*0.985/1e5)*1e5, amax=Math.ceil(TOT26*1.008/1e5)*1e5;
+  const Y=v=>mt+ih-((v-amin)/(amax-amin))*ih;
+  const n=steps.length, bw=Math.min(66, iw/n*0.62), gap=(iw-bw*n)/(n-1);
+  const cx=i=>ml+i*(bw+gap);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});
+  const grid=el('g',{class:'grid'});
+  for(let i=0;i<=5;i++){const v=amin+(amax-amin)*i/5;grid.appendChild(el('line',{x1:ml,y1:Y(v),x2:ml+iw,y2:Y(v)}));}
+  svg.appendChild(grid);
+  const ax=el('g',{class:'axis'});
+  for(let i=0;i<=5;i++){const v=amin+(amax-amin)*i/5;ax.appendChild(el('text',{x:ml-6,y:Y(v)+3,'text-anchor':'end'},[txt('$'+(v/1e6).toFixed(1)+'M')]));}
+  svg.appendChild(ax);
+  let run=TOT25;
+  steps.forEach((s,i)=>{
+    const x=cx(i); let top,bot,col,valTxt;
+    if(s.kind==='total'){top=Y(s.v);bot=Y(amin);col= i===0?'#5b6b86':'url(#tgrad)';run=s.v;valTxt=fmtUSDm(s.v);}
+    else{const from=run,to=run+s.d;top=Y(Math.max(from,to));bot=Y(Math.min(from,to));col=s.kind==='up'?'var(--good)':'var(--bad)';run=to;valTxt=fmtDk(s.d);
+      // connector from previous bar top
+      const py=Y(from);svg.appendChild(el('line',{class:'wf-conn',x1:cx(i-1)+bw,y1:py,x2:x,y2:py}));}
+    const rect=el('rect',{x,y:top,width:bw,height:Math.max(2,bot-top),rx:3,fill:col,'fill-opacity':s.kind==='total'?1:.9,stroke:s.kind==='up'?'var(--good)':s.kind==='down'?'var(--bad)':'none','stroke-opacity':.9});
+    rect.style.cursor='pointer';
+    rect.addEventListener('mousemove',ev=>showTip(`<b>${s.lab}</b><div class="r"><span>${s.kind==='total'?'Total':'Change'}</span><span>${valTxt}</span></div>`,ev));
+    rect.addEventListener('mouseleave',hideTip);
+    svg.appendChild(rect);
+    // value label above
+    svg.appendChild(el('text',{class:'wf-val',x:x+bw/2,y:top-5,'text-anchor':'middle',fill:s.kind==='up'?'var(--good)':s.kind==='down'?'var(--bad)':'var(--ink)'},[txt(valTxt)]));
+    // x label
+    const lab=el('text',{class:'wf-lab',x:x+bw/2,y:H-32,'text-anchor':'end',transform:`rotate(-32 ${x+bw/2} ${H-32})`},[txt(s.lab)]);
+    svg.appendChild(lab);
+  });
+  const grad=el('linearGradient',{id:'tgrad',x1:0,y1:0,x2:0,y2:1});
+  grad.appendChild(el('stop',{offset:'0%','stop-color':'#43c6b2'}));grad.appendChild(el('stop',{offset:'100%','stop-color':'#2f9f8e'}));
+  svg.appendChild(grad);
+  // legend
+  const leg=el('g',{});
+  [['added','var(--good)',0],['lost','var(--bad)',96],['year total','#5b6b86',168]].forEach(([t,col,dx])=>{
+    leg.appendChild(el('rect',{x:ml+dx,y:2,width:12,height:12,rx:2,fill:col}));
+    leg.appendChild(el('text',{x:ml+dx+17,y:12,fill:'var(--sub)','font-size':11,'font-family':'DM Sans','font-weight':600},[txt(t)]));});
+  svg.appendChild(leg);
+  const wrap=document.getElementById('waterfall');wrap.innerHTML='';wrap.appendChild(svg);
+  document.getElementById('wfTitle').textContent=`Growth bridge — how SC added ${fmtUSDm(NET)} (${fmtSg(TOT26/TOT25-1)})`;
+  document.getElementById('wfNote').innerHTML=`<b>${top5g[0].cat}</b> and <b>${top5g[1].cat}</b> alone contributed ${fmtDk(top5g[0].d+top5g[1].d)} — ${fmtPct((top5g[0].d+top5g[1].d)/NET,0)} of the net gain. The five drags cost ${fmtDk(l.slice(0,5).reduce((s,r)=>s+r.d,0))}, led by <b>Security</b>.`;
+}
+
+// ---------- TOP 5 grouped bars ----------
+function drawTop5(){
+  const rows=CATLIST.slice(0,5);
+  const W=560,H=300,ml=44,mr=12,mt=16,mb=44,iw=W-ml-mr,ih=H-mt-mb;
+  const max=Math.max(...rows.map(r=>Math.max(r.ts26,r.ts25)))*1.08;
+  const Y=v=>mt+ih-(v/max)*ih;
+  const gw=iw/rows.length, bw=Math.min(30,gw*0.32);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});
+  const grid=el('g',{class:'grid'});const ax=el('g',{class:'axis'});
+  for(let i=0;i<=4;i++){const v=max*i/4;grid.appendChild(el('line',{x1:ml,y1:Y(v),x2:ml+iw,y2:Y(v)}));ax.appendChild(el('text',{x:ml-6,y:Y(v)+3,'text-anchor':'end'},[txt('$'+(v/1e6).toFixed(1)+'M')]));}
+  svg.appendChild(grid);svg.appendChild(ax);
+  rows.forEach((r,i)=>{
+    const c=ml+gw*i+gw/2;
+    [['2025',r.ts25,'#5b6b86',-bw-2],['2026',r.ts26,'url(#tg2)',2]].forEach(([yr,v,col,off])=>{
+      const rc=el('rect',{x:c+off,y:Y(v),width:bw,height:ih-(Y(v)-mt),rx:3,fill:col});rc.style.cursor='pointer';
+      rc.addEventListener('mousemove',ev=>showTip(`<b>${r.cat} · ${yr}</b><div class="r"><span>Sales</span><span>${fmtUSDk(v)}</span></div>`,ev));
+      rc.addEventListener('mouseleave',hideTip);svg.appendChild(rc);
+    });
+    svg.appendChild(el('text',{class:'wf-lab',x:c,y:H-26,'text-anchor':'middle'},[txt(r.cat)]));
+    svg.appendChild(el('text',{x:c,y:H-12,'text-anchor':'middle',fill:favClass('Total Sales',r.sYoY)==='good'?'var(--good)':'var(--bad)','font-size':10,'font-family':'JetBrains Mono','font-weight':600},[txt(fmtSg(r.sYoY,0))]));
+  });
+  const gd=el('linearGradient',{id:'tg2',x1:0,y1:0,x2:0,y2:1});gd.appendChild(el('stop',{offset:'0%','stop-color':'#43c6b2'}));gd.appendChild(el('stop',{offset:'100%','stop-color':'#2f9f8e'}));svg.appendChild(gd);
+  const wrap=document.getElementById('top5');wrap.innerHTML='';wrap.appendChild(svg);
+  const flat=rows.filter(r=>Math.abs(r.sYoY)<0.05).map(r=>r.cat), grow=rows.filter(r=>r.sYoY>=0.2).map(r=>r.cat);
+  document.getElementById('top5Note').innerHTML=`Takeaway: the two largest categories (<b>${rows[0].cat}</b>, <b>${rows[1].cat}</b>) are roughly flat or down — the growth here comes from <b>${grow.join('</b> and <b>')}</b> lower down the list.`;
+}
+// ---------- share bars ----------
+function drawShare(){
+  const top=CATLIST.slice(0,6);const other=CATLIST.slice(6).reduce((s,r)=>s+r.ts26,0);
+  const items=[...top.map(r=>({n:r.cat,v:r.ts26})),{n:'Others',v:other}];
+  const W=460,rowH=30,mt=4,ml=92,mr=54,ih=items.length*rowH,H=ih+mt+8;
+  const max=Math.max(...items.map(i=>i.v));const X=v=>ml+(v/max)*(W-ml-mr);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});
+  items.forEach((it,i)=>{
+    const y=mt+i*rowH+5,h=rowH-11,last=it.n==='Others';
+    svg.appendChild(el('rect',{x:ml,y,width:Math.max(2,X(it.v)-ml),height:h,rx:3,fill:last?'#5b6b86':'var(--teal)','fill-opacity':last?.8:.85}));
+    svg.appendChild(el('text',{x:ml-8,y:y+h-1,'text-anchor':'end',fill:'var(--sub)','font-size':11,'font-family':'DM Sans','font-weight':600},[txt(it.n)]));
+    svg.appendChild(el('text',{x:X(it.v)+6,y:y+h-1,fill:'var(--sub)','font-size':10.5,'font-family':'JetBrains Mono','font-weight':600},[txt(fmtPct(it.v/TOT26,0))]));
+  });
+  const wrap=document.getElementById('share');wrap.innerHTML='';wrap.appendChild(svg);
+  const top5share=CATLIST.slice(0,5).reduce((s,r)=>s+r.ts26,0)/TOT26;
+  document.getElementById('shareNote').innerHTML=`Takeaway: the top 5 categories are <b>${fmtPct(top5share,0)}</b> of all SC sales — the portfolio is concentrated, so a swing in any one of them moves the whole number.`;
+}
+function drawOrgMix(){
+  const yrs=[['2025',TOT25,ORG25],['2026',TOT26,ORG26]];
+  const W=520,H=300,ml=44,mr=90,mt=16,mb=34,iw=W-ml-mr,ih=H-mt-mb;
+  const max=Math.max(TOT25,TOT26)*1.1;const Y=v=>mt+ih-(v/max)*ih;
+  const gw=iw/2,bw=Math.min(96,gw*0.5);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});const grid=el('g',{class:'grid'});const ax=el('g',{class:'axis'});
+  for(let i=0;i<=4;i++){const v=max*i/4;grid.appendChild(el('line',{x1:ml,y1:Y(v),x2:ml+iw,y2:Y(v)}));ax.appendChild(el('text',{x:ml-6,y:Y(v)+3,'text-anchor':'end'},[txt('$'+(v/1e6).toFixed(0)+'M')]));}
+  svg.appendChild(grid);svg.appendChild(ax);
+  yrs.forEach(([yr,tot,org],i)=>{
+    const x=ml+gw*i+gw/2-bw/2, ad=tot-org;
+    // organic (bottom)
+    const ro=el('rect',{x,y:Y(org),width:bw,height:ih-(Y(org)-mt),rx:3,fill:'var(--teal)','fill-opacity':.9});ro.style.cursor='pointer';
+    ro.addEventListener('mousemove',ev=>showTip(`<b>Organic · ${yr}</b><div class="r"><span>Sales</span><span>${fmtUSDk(org)}</span></div><div class="r"><span>Share</span><span>${fmtPct(org/tot)}</span></div>`,ev));ro.addEventListener('mouseleave',hideTip);
+    // ad-attributed (top)
+    const ra=el('rect',{x,y:Y(tot),width:bw,height:Y(org)-Y(tot),rx:3,fill:'var(--orange)','fill-opacity':.9});ra.style.cursor='pointer';
+    ra.addEventListener('mousemove',ev=>showTip(`<b>Ad-attributed · ${yr}</b><div class="r"><span>Sales</span><span>${fmtUSDk(ad)}</span></div><div class="r"><span>Share</span><span>${fmtPct(ad/tot)}</span></div>`,ev));ra.addEventListener('mouseleave',hideTip);
+    svg.appendChild(ro);svg.appendChild(ra);
+    svg.appendChild(el('text',{x:x+bw/2,y:Y(org)+ (ih-(Y(org)-mt))/2,'text-anchor':'middle',fill:'#04201c','font-size':11,'font-family':'JetBrains Mono','font-weight':700},[txt(fmtPct(org/tot,0))]));
+    svg.appendChild(el('text',{x:x+bw/2,y:H-14,'text-anchor':'middle',fill:'var(--sub)','font-size':12,'font-family':'DM Sans','font-weight':700},[txt(yr)]));
+  });
+  // legend
+  const lg=el('g',{});
+  [['Organic','var(--teal)',0],['Ad-attributed','var(--orange)',18]].forEach(([t,c,dy])=>{
+    lg.appendChild(el('rect',{x:ml+iw+16,y:mt+2+dy,width:11,height:11,rx:2,fill:c}));
+    lg.appendChild(el('text',{x:ml+iw+31,y:mt+11+dy,fill:'var(--sub)','font-size':10.5,'font-family':'DM Sans','font-weight':600},[txt(t)]));});
+  svg.appendChild(lg);
+  const wrap=document.getElementById('orgMix');wrap.innerHTML='';wrap.appendChild(svg);
+  const adYoY=(TOT26-ORG26)/(TOT25-ORG25)-1, orgYoY=ORG26/ORG25-1;
+  document.getElementById('orgNote').innerHTML=`Organic sales <b class="${orgYoY>=0?'good':'bad'}">${fmtSg(orgYoY)}</b> while ad-attributed sales <b>${fmtSg(adYoY)}</b>. Organic's share of the total slipped from <b>${fmtPct(ORG25/TOT25)}</b> to <b>${fmtPct(ORG26/TOT26)}</b> — the +11.7% topline is being carried by paid, not unpaid demand.`;
+  document.getElementById('orgTitle').textContent=`Sales mix — organic fell to ${fmtPct(ORG26/TOT26,0)} of sales`;
+}
+function drawOrgBars(){
+  const rows=CATLIST.slice(0,8).filter(r=>r.orgYoY!=null);
+  const W=470,rowH=26,mt=6,ml=92,mr=52,ih=rows.length*rowH,H=ih+mt+6;
+  const mx=Math.max(0.4,Math.max(...rows.map(r=>Math.abs(r.orgYoY))));
+  const zero=ml+((0-(-mx))/(2*mx))*(W-ml-mr);const X=v=>ml+((v-(-mx))/(2*mx))*(W-ml-mr);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});
+  svg.appendChild(el('line',{x1:zero,y1:mt,x2:zero,y2:mt+ih,stroke:'var(--line2)','stroke-width':1}));
+  rows.forEach((r,i)=>{
+    const y=mt+i*rowH+4,h=rowH-9,good=r.orgYoY>=0,col=good?'var(--good)':'var(--bad)';
+    const x0=good?zero:X(r.orgYoY),w=Math.abs(X(r.orgYoY)-zero);
+    const rc=el('rect',{x:x0,y,width:Math.max(1,w),height:h,rx:3,fill:col,'fill-opacity':.85});rc.style.cursor='pointer';
+    rc.addEventListener('mousemove',ev=>showTip(`<b>${r.cat}</b><div class="r"><span>Organic 26</span><span>${fmtUSDk(r.org26)}</span></div><div class="r"><span>Organic YoY</span><span>${fmtSg(r.orgYoY)}</span></div>`,ev));rc.addEventListener('mouseleave',hideTip);
+    svg.appendChild(rc);
+    svg.appendChild(el('text',{x:ml-8,y:y+h-1,'text-anchor':'end',fill:'var(--sub)','font-size':11,'font-family':'DM Sans','font-weight':600},[txt(r.cat)]));
+    svg.appendChild(el('text',{x:good?X(r.orgYoY)+6:X(r.orgYoY)-6,y:y+h-1,'text-anchor':good?'start':'end',fill:col,'font-size':10.5,'font-family':'JetBrains Mono','font-weight':600},[txt(fmtSg(r.orgYoY,0))]));
+  });
+  const wrap=document.getElementById('orgBars');wrap.innerHTML='';wrap.appendChild(svg);
+}
+
+// ---------- YoY detail table ----------
+const YOY_COLS=[{k:'cat',l:'Category',cls:'l',t:'txt'},{k:'ts26',l:'Sales 26',t:'usd'},{k:'ts25',l:'Sales 25',t:'usd'},
+  {k:'d',l:'Δ Sales',t:'dk',m:'Total Sales'},{k:'sYoY',l:'Sales YoY',t:'pctf',m:'Total Sales'},{k:'salesShare',l:'Sales share',t:'pc'},
+  {k:'org26',l:'Organic 26',t:'usd',sep:1},{k:'orgYoY',l:'Organic YoY',t:'pctf',m:'Organic'},{k:'orgShare',l:'Organic %',t:'pc'},
+  {k:'sp26',l:'Spend 26',t:'usd',sep:1},{k:'spYoY',l:'Spend YoY',t:'pctf',m:'Spend'},{k:'spendShare',l:'Spend share',t:'pc'},
+  {k:'roas26',l:'ROAS',t:'x',sep:1},{k:'roasD',l:'ROAS Δ',t:'xd',m:'ROAS'},
+  {k:'tac26',l:'TACOS',t:'pc',sep:1},{k:'tacD',l:'TACOS Δ',t:'ppf',m:'TACOS'},{k:'seYoY',l:'Sess YoY',t:'pctf',m:'Sessions',sep:1}];
+let yoySort={k:'ts26',dir:-1};
+function cellYoY(c,r){const v=r[c.k];const sp=c.sep?' gsep':'';
+  if(c.t==='txt')return `<td class="l${sp}">${v}</td>`;
+  if(v==null)return `<td class="${sp.trim()}">—</td>`;
+  if(c.t==='usd')return `<td class="${sp.trim()}">${fmtUSDk(v)}</td>`;
+  if(c.t==='x')return `<td class="${sp.trim()}">${fmtX(v)}</td>`;
+  if(c.t==='pc')return `<td class="${sp.trim()}">${fmtPct(v)}</td>`;
+  const cl=favClass(c.m,v);
+  if(c.t==='dk')return `<td class="chip ${cl}${sp}">${fmtDk(v)}</td>`;
+  if(c.t==='pctf')return `<td class="chip ${cl}${sp}">${fmtSg(v)}</td>`;
+  if(c.t==='ppf')return `<td class="chip ${cl}${sp}">${fmtSg(v)} pp</td>`;
+  if(c.t==='xd')return `<td class="chip ${cl}${sp}">${fmtXd(v)}</td>`;return `<td class="${sp.trim()}">${v}</td>`;}
+function totalRow(){const sp26=totYtd('Spend','2026'),sp25=totYtd('Spend','2025'),as26=totYtd('Ad Sales','2026'),as25=totYtd('Ad Sales','2025');
+  const roas26=as26/sp26,roas25=as25/sp25,tac26=sp26/TOT26,tac25=sp25/TOT25;
+  return {cat:'Total (all categories)',ts26:TOT26,ts25:TOT25,d:NET,sYoY:TOT26/TOT25-1,salesShare:1,spendShare:1,
+    org26:ORG26,org25:ORG25,orgYoY:ORG26/ORG25-1,orgShare:ORG26/TOT26,ad26:as26,ad25:as25,
+    sp26,spYoY:sp26/sp25-1,roas26,roasD:roas26-roas25,tac26,tacD:tac26-tac25,seYoY:totYtd('Sessions','2026')/totYtd('Sessions','2025')-1};}
+function renderYoY(){
+  const rows=[...CATLIST].sort((a,b)=>{const x=a[yoySort.k],y=b[yoySort.k];if(x==null)return 1;if(y==null)return -1;if(typeof x==='string')return yoySort.dir*x.localeCompare(y);return yoySort.dir*(x-y);});
+  let h='<thead><tr>'+YOY_COLS.map(c=>`<th class="${c.cls||''}${c.sep?' gsep':''} ${yoySort.k===c.k?'sorted':''}" data-k="${c.k}">${c.l}<span class="ar">${yoySort.k===c.k?(yoySort.dir<0?'▼':'▲'):'▲'}</span></th>`).join('')+'</tr></thead><tbody>';
+  h+='<tr class="total">'+YOY_COLS.map(c=>cellYoY(c,totalRow())).join('')+'</tr>';
+  h+=rows.map(r=>'<tr>'+YOY_COLS.map(c=>cellYoY(c,r)).join('')+'</tr>').join('')+'</tbody>';
+  const t=document.getElementById('yoyTable');t.innerHTML=h;
+  t.querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(yoySort.k===k)yoySort.dir*=-1;else{yoySort.k=k;yoySort.dir=(k==='cat')?1:-1;}renderYoY();});
+}
+
+// ---------- MoM ----------
+let momMetric='Total Sales',momCat='';
+const isRatio=m=>m==='ROAS'||m==='TACOS';
+function seriesTotal(met){if(met==='ROAS')return MONTHS.map((_,i)=>{const s=monthlyTotal('Spend','2026')[i],a=monthlyTotal('Ad Sales','2026')[i];return s?a/s:0;});
+  if(met==='TACOS')return MONTHS.map((_,i)=>{const s=monthlyTotal('Spend','2026')[i],t=monthlyTotal('Total Sales','2026')[i];return t?s/t:0;});
+  if(met==='Organic')return MONTHS.map((_,i)=>monthlyTotal('Total Sales','2026')[i]-monthlyTotal('Ad Sales','2026')[i]);return monthlyTotal(met,'2026');}
+function seriesCat(cat,met){const c=CATS[cat];if(met==='ROAS')return MONTHS.map((_,i)=>{const s=c['Spend']['2026'][i],a=c['Ad Sales']['2026'][i];return s?a/s:0;});
+  if(met==='TACOS')return MONTHS.map((_,i)=>{const s=c['Spend']['2026'][i],t=c['Total Sales']['2026'][i];return t?s/t:0;});
+  if(met==='Organic')return MONTHS.map((_,i)=>c['Total Sales']['2026'][i]-c['Ad Sales']['2026'][i]);return c[met]['2026'];}
+const fmtMetric=(m,v)=>m==='ROAS'?fmtX(v):m==='TACOS'?fmtPct(v):(m==='Spend'||m==='Total Sales'||m==='Organic')?fmtUSDk(v):fmtInt(v);
+function drawLine(){
+  const W=1080,H=340,ml=64,mr=110,mt=18,mb=34,iw=W-ml-mr,ih=H-mt-mb;
+  const sTot=seriesTotal(momMetric),sCat=momCat?seriesCat(momCat,momMetric):null;
+  const all=[...sTot,...(sCat||[])];let ymin=Math.min(...all),ymax=Math.max(...all);ymin=isRatio(momMetric)?Math.min(ymin,0):0;ymax*=1.08;if(ymax===ymin)ymax=ymin+1;
+  const X=i=>ml+(i/(MONTHS.length-1))*iw,Y=v=>mt+ih-((v-ymin)/(ymax-ymin))*ih;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`});const g=el('g',{class:'grid'});const ax=el('g',{class:'axis'});
+  for(let i=0;i<=5;i++){const v=ymin+(ymax-ymin)*i/5;g.appendChild(el('line',{x1:ml,y1:Y(v),x2:ml+iw,y2:Y(v)}));ax.appendChild(el('text',{x:ml-8,y:Y(v)+3,'text-anchor':'end'},[txt(momMetric==='TACOS'?(v*100).toFixed(0)+'%':momMetric==='ROAS'?v.toFixed(1)+'x':(v>=1000?Math.round(v/1000)+'k':Math.round(v)))]));}
+  MONTHS.forEach((m,i)=>ax.appendChild(el('text',{x:X(i),y:mt+ih+18,'text-anchor':'middle'},[txt(m)])));
+  svg.appendChild(g);svg.appendChild(ax);
+  function path(series,color,label,dash){const d=series.map((v,i)=>(i?'L':'M')+X(i)+' '+Y(v)).join(' ');
+    svg.appendChild(el('path',{class:'ln',d,stroke:color,...(dash?{'stroke-dasharray':'5 5'}:{})}));
+    series.forEach((v,i)=>{const c=el('circle',{class:'pt',cx:X(i),cy:Y(v),r:4,fill:'var(--bg)',stroke:color,'stroke-width':2});
+      c.addEventListener('mousemove',ev=>showTip(`<b>${label} · ${MONTHS[i]}</b><div class="r"><span>${momMetric}</span><span>${fmtMetric(momMetric,v)}</span></div>`,ev));c.addEventListener('mouseleave',hideTip);svg.appendChild(c);});
+    svg.appendChild(el('text',{x:X(series.length-1)+8,y:Y(series[series.length-1])+3,fill:color,'font-size':11,'font-family':'JetBrains Mono','font-weight':600},[txt(label)]));}
+  path(sTot,'var(--teal)','All SC',false);if(sCat)path(sCat,'var(--orange)',momCat,true);
+  const wrap=document.getElementById('line');wrap.innerHTML='';wrap.appendChild(svg);
+  const f=sTot[0],lst=sTot[sTot.length-1];const chg=isRatio(momMetric)?(lst-f):(f?lst/f-1:0);
+  const ctxt=isRatio(momMetric)?(momMetric==='ROAS'?fmtXd(chg):fmtSg(chg)+' pp'):fmtSg(chg);
+  document.getElementById('momCap').innerHTML=`All categories combined · ${momMetric} · Jan → Jul <b class="${favClass(momMetric,chg)}">${ctxt}</b>`;
+}
+function renderMomLeaders(){
+  const met=momMetric,ratio=isRatio(met);
+  const rows=Object.keys(CATS).map(cat=>{const s=seriesCat(cat,met);const d=ratio?(s[6]-s[5]):(s[5]?s[6]/s[5]-1:null);
+    const size=ratio?0:sum(s);return {cat,jun:s[5],jul:s[6],d,size};}).filter(r=>r.d!=null && (ratio?true:r.size>20000));
+  const up=[...rows].sort((a,b)=>b.d-a.d).slice(0,5);
+  const dn=[...rows].sort((a,b)=>a.d-b.d).slice(0,5);
+  const val=d=>ratio?(met==='ROAS'?fmtXd(d):fmtSg(d)+' pp'):fmtSg(d);
+  const sub=r=>`${fmtMetric(met,r.jun)} → ${fmtMetric(met,r.jul)}`;
+  const mk=(cls,title,arr)=>leadCard(cls,title,{text:met,cls:''},arr.map(r=>({name:r.cat,sub:sub(r),bar:r.d||0.0001,color:favClass(met,r.d)==='good'?'var(--good)':'var(--bad)',val:val(r.d),vcls:favClass(met,r.d)})));
+  document.getElementById('momLeads').innerHTML=mk('lead-up','Improved most',up)+mk('lead-down','Declined most',dn);
+}
+function renderMoM(){
+  const met=momMetric,ratio=isRatio(met);
+  const rows=Object.keys(CATS).map(cat=>{const s=seriesCat(cat,met);const d=ratio?(s[6]-s[5]):(s[5]?s[6]/s[5]-1:null);
+    const ytdv=ratio?(met==='ROAS'?(ytd(cat,'Spend','2026')?ytd(cat,'Ad Sales','2026')/ytd(cat,'Spend','2026'):0):(ytd(cat,'Total Sales','2026')?ytd(cat,'Spend','2026')/ytd(cat,'Total Sales','2026'):0)):sum(s);
+    return {cat,s,ytdv,d};}).sort((a,b)=>b.ytdv-a.ytdv);
+  const sT=seriesTotal(met);const dT=ratio?(sT[6]-sT[5]):(sT[5]?sT[6]/sT[5]-1:0);
+  const cell=v=>ratio?(met==='ROAS'?fmtX(v):fmtPct(v)):(met==='Spend'||met==='Total Sales'?fmtUSDk(v):fmtInt(v));
+  const dcell=d=>{if(d==null)return '<td>—</td>';const cl=favClass(met,d);const t=ratio?(met==='ROAS'?fmtXd(d):fmtSg(d)+' pp'):fmtSg(d);return `<td class="chip ${cl}">${t}</td>`;};
+  let h='<thead><tr><th class="l">Category</th>'+MONTHS.map(m=>`<th>${m}</th>`).join('')+'<th>MoM Δ</th></tr></thead><tbody>';
+  h+=`<tr class="total"><td class="l">Total (all categories)</td>${sT.map(v=>`<td>${cell(v)}</td>`).join('')}${dcell(dT)}</tr>`;
+  h+=rows.map(r=>`<tr><td class="l">${r.cat}</td>${r.s.map(v=>`<td>${cell(v)}</td>`).join('')}${dcell(r.d)}</tr>`).join('')+'</tbody>';
+  document.getElementById('momTable').innerHTML=h;
+  document.getElementById('momTitle').textContent=`Monthly trajectory — ${met}, 2026`;
+  document.getElementById('momTblTitle').textContent=`Category detail — ${met} by month, 2026`;
+}
+
+// ---------- CSV ----------
+const toCSV=rows=>rows.map(r=>r.map(c=>{const s=String(c==null?'':c);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
+function rawDownload(name,csv){
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  if(navigator.msSaveBlob){navigator.msSaveBlob(blob,name);return true;}
+  try{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.rel='noopener';a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url);},1500);return true;}catch(e){return false;}
+}
+function showCopyModal(name,csv){
+  let ov=document.getElementById('copyOv');
+  if(!ov){ov=document.createElement('div');ov.id='copyOv';
+    ov.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(4,8,14,.74);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px';
+    ov.innerHTML=`<div style="background:#0d1420;border:1px solid #25324e;border-radius:16px;max-width:660px;width:100%;padding:20px;box-shadow:0 30px 80px -30px #000">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px"><b id="cmTitle" style="font-size:15px"></b>
+      <button id="cmClose" style="background:transparent;border:0;color:#8a97ad;font-size:22px;cursor:pointer;line-height:1">×</button></div>
+      <p style="color:#aab6cc;font-size:12.5px;margin:0 0 12px;line-height:1.5">This viewer blocks direct downloads. Copy the data below, or open the dashboard as its own browser tab to download the file normally.</p>
+      <textarea id="cmText" readonly style="width:100%;height:210px;background:#080c14;border:1px solid #25324e;border-radius:10px;color:#e9eef7;font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px;resize:vertical;white-space:pre"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button id="cmCopy" style="background:linear-gradient(180deg,#43c6b2,#2f9f8e);border:0;color:#07110e;font-weight:600;font-size:13px;padding:9px 16px;border-radius:9px;cursor:pointer">Copy to clipboard</button>
+      <button id="cmDl" style="background:#111a29;border:1px solid #25324e;color:#e9eef7;font-weight:600;font-size:13px;padding:9px 16px;border-radius:9px;cursor:pointer">Try download again</button></div></div>`;
+    document.body.appendChild(ov);ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});}
+  ov.querySelector('#cmTitle').textContent=name;const ta=ov.querySelector('#cmText');ta.value=csv;
+  ov.querySelector('#cmClose').onclick=()=>ov.remove();
+  ov.querySelector('#cmCopy').onclick=()=>{ta.focus();ta.select();let done=false;try{done=document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(csv).then(()=>{}).catch(()=>{});const b=ov.querySelector('#cmCopy');b.textContent='Copied \u2713';setTimeout(()=>b.textContent='Copy to clipboard',1600);};
+  ov.querySelector('#cmDl').onclick=()=>rawDownload(name,csv);
+}
+function download(name,rows){const csv=toCSV(rows);const inFrame=(window.self!==window.top);const ok=rawDownload(name,csv);if(inFrame||!ok)showCopyModal(name,csv);}
+function dlLeaders(){const head=['Rank type','Rank','Category','Sales 2026','Sales 2025','Δ Sales','Sales YoY %','Share of total %'];
+  const byD=[...CATLIST].sort((a,b)=>b.d-a.d);const gain=byD.filter(r=>r.d>0).slice(0,5);const loss=byD.filter(r=>r.d<0).slice(-5).sort((a,b)=>a.d-b.d);const sell=[...CATLIST].slice(0,5);
+  const line=(t,i,r)=>[t,i+1,r.cat,Math.round(r.ts26),Math.round(r.ts25),Math.round(r.d),(r.sYoY*100).toFixed(1),(r.ts26/TOT26*100).toFixed(1)];
+  download('SC_Category_Leaders.csv',[head,...gain.map((r,i)=>line('Growth driver',i,r)),...loss.map((r,i)=>line('Drag',i,r)),...sell.map((r,i)=>line('Biggest seller',i,r))]);}
+function dlYoY(){const head=['Category','Sales 2026','Sales 2025','Δ Sales','Sales YoY %','Sales share %','Organic 2026','Organic 2025','Organic YoY %','Organic % of sales','Spend 2026','Spend YoY %','Spend share %','ROAS 2026','ROAS Δ','TACOS 2026 %','TACOS Δ pp','Sessions YoY %'];
+  const body=[totalRow(),...CATLIST].map(r=>[r.cat,Math.round(r.ts26),Math.round(r.ts25),Math.round(r.d),r.sYoY==null?'':(r.sYoY*100).toFixed(1),(r.salesShare*100).toFixed(1),Math.round(r.org26),Math.round(r.org25),r.orgYoY==null?'':(r.orgYoY*100).toFixed(1),(r.orgShare*100).toFixed(1),Math.round(r.sp26),r.spYoY==null?'':(r.spYoY*100).toFixed(1),(r.spendShare*100).toFixed(1),r.roas26.toFixed(3),r.roasD.toFixed(3),(r.tac26*100).toFixed(2),(r.tacD*100).toFixed(2),r.seYoY==null?'':(r.seYoY*100).toFixed(1)]);
+  download('SC_Category_YoY.csv',[head,...body]);}
+function dlMoM(){const met=momMetric,ratio=isRatio(met);const head=['Category',...MONTHS.map(m=>`${m} (${met})`),'MoM Δ (Jul v Jun)'];
+  const mk=cat=>{const s=seriesCat(cat,met);const d=ratio?(s[6]-s[5]):(s[5]?s[6]/s[5]-1:'');return [cat,...s.map(v=>ratio?(met==='TACOS'?(v*100).toFixed(2):v.toFixed(3)):Math.round(v)),ratio?(met==='ROAS'?d.toFixed(3):(d*100).toFixed(2)):(d===''?'':(d*100).toFixed(1))];};
+  const sT=seriesTotal(met);const dT=ratio?(sT[6]-sT[5]):(sT[5]?sT[6]/sT[5]-1:'');
+  const tot=['Total (all categories)',...sT.map(v=>ratio?(met==='TACOS'?(v*100).toFixed(2):v.toFixed(3)):Math.round(v)),ratio?(met==='ROAS'?dT.toFixed(3):(dT*100).toFixed(2)):(dT*100).toFixed(1)];
+  download(`SC_Category_MoM_${met.replace(/\s/g,'')}.csv`,[head,tot,...Object.keys(CATS).map(mk)]);}
+function dlFull(){const head=['Category','Metric','Year',...MONTHS,'YTD'];const body=[];
+  Object.keys(CATS).forEach(cat=>{D.metrics.forEach(met=>['2026','2025'].forEach(yr=>{const s=CATS[cat][met][yr];body.push([cat,met,yr,...s.map(v=>Math.round(v*100)/100),Math.round(sum(s)*100)/100]);}));
+    ['2026','2025'].forEach(yr=>{const s=MONTHS.map((_,i)=>CATS[cat]['Total Sales'][yr][i]-CATS[cat]['Ad Sales'][yr][i]);body.push([cat,'Organic Sales',yr,...s.map(v=>Math.round(v*100)/100),Math.round(sum(s)*100)/100]);});});
+  download('SC_Category_Full_Monthly.csv',[head,...body]);}
+
+// wiring
+document.getElementById('dlBtn').onclick=e=>{e.stopPropagation();document.getElementById('dlMenu').classList.toggle('open');};
+document.addEventListener('click',()=>document.getElementById('dlMenu').classList.remove('open'));
+document.querySelectorAll('#dlMenu button').forEach(b=>b.onclick=()=>{({leaders:dlLeaders,yoy:dlYoY,mom:dlMoM,full:dlFull})[b.dataset.dl]();});
+function selectTab(w){const yoy=w==='yoy';document.getElementById('t-yoy').setAttribute('aria-selected',yoy);document.getElementById('t-mom').setAttribute('aria-selected',!yoy);
+  document.getElementById('v-yoy').classList.toggle('on',yoy);document.getElementById('v-mom').classList.toggle('on',!yoy);
+  if(yoy){drawWaterfall();drawTop5();drawShare();drawOrgMix();drawOrgBars();}else{drawLine();renderMomLeaders();}}
+document.getElementById('t-yoy').onclick=()=>selectTab('yoy');document.getElementById('t-mom').onclick=()=>selectTab('mom');
+document.querySelectorAll('#momMetric button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#momMetric button').forEach(x=>x.classList.remove('act'));b.classList.add('act');momMetric=b.dataset.m;drawLine();renderMomLeaders();renderMoM();});
+const sel=document.getElementById('momCat');sel.innerHTML='<option value="">— none —</option>'+CATLIST.map(r=>`<option value="${r.cat}">${r.cat}</option>`).join('');sel.onchange=()=>{momCat=sel.value;drawLine();};
+document.getElementById('foot').innerHTML=`Source: ${D.source}. Reporting period Jan–Jul (Aug-2026 not yet reported). ROAS = Ad Sales ÷ Spend · TACOS = Spend ÷ Total Sales. Favourability: green = spend/TACOS down or sales/ROAS/traffic up. Generated ${D.generated}.`;
+
+renderLeaders();renderYoY();renderMoM();selectTab('yoy');
+window.addEventListener('resize',()=>{if(document.getElementById('v-yoy').classList.contains('on')){drawWaterfall();drawTop5();drawShare();drawOrgMix();drawOrgBars();}else drawLine();});
+</script>
+</body>
+</html>
